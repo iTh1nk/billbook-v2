@@ -1,11 +1,21 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+body {
+  color: white;
+  background-color: black;
+}
 
-body { background: black; color: white; }
-
-@light-mode {
+@media (prefers-color-scheme: light) {
   body {
-    @apply bg-white text-black;
+    background-color: white;
+    color: black;
+  }
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background-color: black;
+    color: white;
   }
 }
