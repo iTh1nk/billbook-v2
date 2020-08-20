@@ -34,7 +34,7 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
 
-      <header className="fixed top-0 w-full text-gray-500 bg-gray-900 light:bg-gray-300 p-3 md:flex md:justify-start">
+      <header className="z-10 fixed top-0 w-full text-gray-500 bg-gray-900 light:bg-gray-300 p-3 md:flex md:justify-start">
         <div className="flex items-center justify-between">
           <div>
             <Link href="/">
@@ -78,7 +78,7 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
           </div>
         </div>
 
-        <nav className={(isExpand ? "" : "  hidden ") + "md:flex"}>
+        <nav className={(isExpand ? "" : " hidden ") + "md:flex"}>
           <Link href="/profile">
             <a className="block mt-2 ml-4 transition duration-500 ease-in-out hover:text-white lg:light:text-black">
               Profile
