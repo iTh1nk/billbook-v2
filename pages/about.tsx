@@ -1,9 +1,11 @@
-import React from 'react'
-import Layout from '../components/Layout'
-import Link from 'next/link'
-type PostLinkProps = {
-  title?: string
+import React from "react";
+import { Layout } from "../components/Layout";
+import Link from "next/link";
+
+interface PostLinkProps {
+  title?: string;
 }
+
 const PostLink: React.FunctionComponent<PostLinkProps> = ({ title }) => {
   return (
     <li>
@@ -11,8 +13,8 @@ const PostLink: React.FunctionComponent<PostLinkProps> = ({ title }) => {
         <a>{title}</a>
       </Link>
     </li>
-  )
-}
+  );
+};
 const About: React.FunctionComponent = () => {
   return (
     <Layout title="About">
@@ -21,6 +23,6 @@ const About: React.FunctionComponent = () => {
       <PostLink title="Learn Next.js is awesome" />
       <PostLink title="Deploy apps with Zeit" />
     </Layout>
-  )
-}
-export default About
+  );
+};
+export default About;

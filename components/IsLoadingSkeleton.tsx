@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 
-export default function IsLoadingSkeleton() {
-
+export const IsLoadingSkeleton: React.FunctionComponent = () => {
   return (
     <div className="shadow rounded-md p-4 max-w-sm w-full mx-auto">
       <div className="animate-pulse flex space-x-4">
@@ -16,4 +15,4 @@ export default function IsLoadingSkeleton() {
       </div>
     </div>
   );
-}
+};

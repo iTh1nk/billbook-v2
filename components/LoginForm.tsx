@@ -3,20 +3,24 @@ import { Formik, Field, Form, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNotch, faUndo } from "@fortawesome/free-solid-svg-icons";
-import Modal from "./Modal";
+import { Modal } from "./Modal";
 
 interface Values {
   username: string;
   password: string;
 }
+interface LoginFormProps {
+  isModal: boolean;
+  cb: (e: any) => void;
+}
 
-export default function LoginForm(props) {
-
+export const LoginForm: React.FunctionComponent<LoginFormProps> = (props) => {
   return (
     <Modal
       title="Login"
       isModal={props.isModal}
-      isNotConfirm={true}
+      isNotConfirmBtn={true}
+      isNotClose={true}
       cbIsModal={props.cb}
     >
       <div className="w-full max-w-xs ml-2">
@@ -142,4 +146,4 @@ export default function LoginForm(props) {
       </div>
     </Modal>
   );
-}
+};

@@ -1,20 +1,30 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Head from "next/head";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
-import Modal from "./Modal";
-import LoginForm from "./LoginForm";
-import Rnotes from "./Rnotes";
+import { LoginForm } from "./LoginForm";
+import { Rnotes } from "./Rnotes";
+import { Welcome } from "./Welcom";
 
-type LayoutProps = {
+interface LayoutProps {
   title?: string;
-};
+}
+let welcomeDismiss: string = "";
 
-const Layout: React.FunctionComponent<LayoutProps> = ({ children, title }) => {
-  const [isExpand, setIsExpand] = useState(false);
-  const [isModal, setIsModal] = useState(false);
-  const [isModalLogin, setIsModalLogin] = useState(false);
+export const Layout: React.FunctionComponent<LayoutProps> = ({
+  children,
+  title,
+}) => {
+  const [isExpand, setIsExpand] = useState<boolean>(false);
+  const [isModalNotes, setIsModalNotes] = useState<boolean>(false);
+  const [isModalLogin, setIsModalLogin] = useState<boolean>(false);
+  const [isModalWelcome, setIsModalWelcome] = useState<boolean>(true);
+
+  useEffect(() => {
+    welcomeDismiss = localStorage.getItem("welcomeDismiss");
+    setIsModalWelcome(welcomeDismiss !== "yes");
+  }, []);
 
   return (
     <div className="flex flex-col h-screen justify-between">
@@ -80,14 +90,25 @@ const Layout: React.FunctionComponent<LayoutProps> = ({ children, title }) => {
             </a>
           </div>
           <div
-            onClick={(e) => setIsModal(!isModal)}
+            onClick={(e) => setIsModalNotes(!isModalNotes)}
             className="block mt-2 ml-4 transition duration-500 ease-in-out hover:text-white lg:light:text-black cursor-pointer"
           >
             Notes
           </div>
         </nav>
       </header>
-      <Rnotes isModal={isModal} cb={(e) => setIsModal(!isModal)} />
+
+      <Welcome
+        isModal={isModalWelcome}
+        cb={(e) => {
+          setIsModalWelcome(!isModalWelcome);
+          localStorage.setItem("welcomeDismiss", "yes");
+        }}
+      />
+      <Rnotes
+        isModal={isModalNotes}
+        cb={(e) => setIsModalNotes(!isModalNotes)}
+      />
       <LoginForm
         isModal={isModalLogin}
         cb={(e) => setIsModalLogin(!isModalLogin)}
@@ -107,4 +128,3 @@ const Layout: React.FunctionComponent<LayoutProps> = ({ children, title }) => {
     </div>
   );
 };
-export default Layout;

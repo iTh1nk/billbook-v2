@@ -8,9 +8,13 @@ module.exports = {
       },
       animation: {
         "spin-slow": "spin 15s linear infinite",
+        "bounce-slow": "bounce 5s infinite",
       },
       backgroundOpacity: {
         "95": "0.95",
+      },
+      scale: {
+        "98": ".98",
       },
     },
   },
