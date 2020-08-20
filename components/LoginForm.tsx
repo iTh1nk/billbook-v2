@@ -3,17 +3,22 @@ import { Formik, Field, Form, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNotch, faUndo } from "@fortawesome/free-solid-svg-icons";
+import Modal from "./Modal";
 
 interface Values {
   username: string;
   password: string;
 }
 
-export default function LoginForm() {
-  const [isLoading, setIsLoading] = useState(true);
+export default function LoginForm(props) {
 
   return (
-    <>
+    <Modal
+      title="Login"
+      isModal={props.isModal}
+      isNotConfirm={true}
+      cbIsModal={props.cb}
+    >
       <div className="w-full max-w-xs ml-2">
         <Formik
           initialValues={{
@@ -135,6 +140,6 @@ export default function LoginForm() {
           )}
         </Formik>
       </div>
-    </>
+    </Modal>
   );
 }

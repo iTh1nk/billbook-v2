@@ -1,13 +1,23 @@
+/*
+ * Created(Updated) on Wed Aug 19 2020
+ *
+ * Copyright (c) 2020 We0mmm
+ */
+
 import React, { useState } from "react";
 import Login from "./LoginForm";
 
 export default function Modal(props) {
   return (
-    <div className={(props.isModal ? "" : " hidden ") + "flex justify-center"}>
+    <div
+      className={
+        (props.isModal
+          ? " duration-500 opacity-100 "
+          : " duration-300 opacity-0 invisible ") + "flex justify-center"
+      }
+    >
       <div
-        onClick={(e) => {
-          props.title === "Login" ? null : props.cbIsModal();
-        }}
+        onClick={props.title === "Login" ? null : props.cbIsModal}
         className="bg-gray-900 w-full h-full fixed bg-opacity-95"
       ></div>
 
@@ -16,17 +26,18 @@ export default function Modal(props) {
           {props.title || "Place Modal Title Here"}
         </div>
         <div className="overflow-scroll h-full mb-6 text-gray-400">
-          {props.title === "Login" ? (
+          {/* {props.title === "Login" ? (
             <Login />
           ) : (
             props.content || "Place Modal Body Here."
-          )}
+          )} */}
+          {props.children}
         </div>
         <div>
           <div className="py-3 sm:flex sm:flex-row-reverse">
             <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto sm:ml-3 mb-5 md:mb-0">
               <button
-                onClick={(e) => props.cbIsModal()}
+                onClick={props.cbIsModal}
                 type="button"
                 className="inline-flex justify-center w-full rounded-md border border-gray-700 px-4 py-2 bg-gray-600 text-base leading-6 font-medium text-gray-900 shadow-sm transition duration-500 ease-in-out hover:text-white focus:outline-none focus:border-orange-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
               >

@@ -4,6 +4,8 @@ import Head from "next/head";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import Modal from "./Modal";
+import LoginForm from "./LoginForm";
+import Rnotes from "./Rnotes";
 
 type LayoutProps = {
   title?: string;
@@ -66,7 +68,7 @@ const Layout: React.FunctionComponent<LayoutProps> = ({ children, title }) => {
           </div>
         </div>
 
-        <nav className={(isExpand ? "" : " hidden ") + "md:flex"}>
+        <nav className={(isExpand ? "" : "  hidden ") + "md:flex"}>
           <Link href="/profile">
             <a className="block mt-2 ml-4 transition duration-500 ease-in-out hover:text-white lg:light:text-black">
               Profile
@@ -85,18 +87,10 @@ const Layout: React.FunctionComponent<LayoutProps> = ({ children, title }) => {
           </div>
         </nav>
       </header>
-      <Modal
-        title="Release Notes"
-        content=""
-        isModal={isModal}
-        cbIsModal={(e) => setIsModal(!isModal)}
-      />
-      <Modal
-        title="Login"
-        content=""
+      <Rnotes isModal={isModal} cb={(e) => setIsModal(!isModal)} />
+      <LoginForm
         isModal={isModalLogin}
-        isNotConfirm={true}
-        cbIsModal={(e) => setIsModalLogin(!isModalLogin)}
+        cb={(e) => setIsModalLogin(!isModalLogin)}
       />
 
       {/* Web Body */}
