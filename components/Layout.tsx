@@ -47,14 +47,14 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
           </div>
           <div>
             <Link href="/profile">
-              <a className="text-green-400 light:text-green-600 transition duration-500 ease-in-out hover:text-green-200 md:ml-4">
+              <a className="text-green-400 light:text-green-800 transition duration-500 ease-in-out hover:text-green-200 md:ml-4">
                 Hi, Mac
               </a>
             </Link>
           </div>
           <div className="flex items-center md:absolute md:right-0">
             <Link href="/about">
-              <a className="mr-4">
+              <a className="mr-4 opacity-25 transition duration-300 hover:opacity-100">
                 <img
                   className="lg:w-6 h-6 animate-spin-slow shadow rounded-full transition duration-500 ease-in-out"
                   src="/we0mmm-r.png"
@@ -79,9 +79,9 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
         </div>
 
         <nav className={(isExpand ? "" : " hidden ") + "md:flex"}>
-          <Link href="/profile">
+          <Link href="/admin">
             <a className="block mt-2 ml-4 transition duration-500 ease-in-out hover:text-white lg:light:text-black">
-              Profile
+              Admin
             </a>
           </Link>
           <div onClick={(e) => setIsModalLogin(!isModalLogin)}>

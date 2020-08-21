@@ -19,3 +19,11 @@ body {
     color: white;
   }
 }
+
+.we-admin-title {
+  @apply transition duration-500 cursor-pointer text-gray-500
+}
+
+.we-admin-title:hover {
+  @apply transition duration-500 text-white
+}

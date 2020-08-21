@@ -9,5 +9,9 @@ export const Container: React.FunctionComponent<ContainerProps> = ({
 }: {
   children: ReactNode;
 }) => {
-  return <div className=" z-0 mt-20 ml-12 mr-12 mb-auto">{children}</div>;
+  return (
+    <div className="z-0 mt-20 ml-6 mr-6 mb-auto md:ml-12 md:mr-12">
+      {children}
+    </div>
+  );
 };

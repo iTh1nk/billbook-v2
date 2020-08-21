@@ -30,7 +30,6 @@ export async function getStaticPaths() {
 export async function getStaticProps({ params }) {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_SUB}/${params.id}`);
   const detail = await res.json();
-  console.log(detail)
   return { props: { detail } };
 }
 
