@@ -2,18 +2,21 @@ import React, { useState, useEffect } from "react";
 import { IsLoadingSkeleton } from "./IsLoadingSkeleton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
+import Link from "next/link";
 
 type DetailsData = {
   date: string;
+  id: number;
 };
 interface Props {
   data: Array<DetailsData>;
   year: string;
+  id: number
 }
 
-export const Details: React.FunctionComponent<Props> = ({ data, year }) => {
+const Details: React.FunctionComponent<Props> = ({ data, year }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isExpand, setIsExpand] = useState<boolean>(false);
+  const [isExpand, setIsExpand] = useState<boolean>(true);
 
   useEffect(() => {
     setTimeout(() => {
@@ -24,7 +27,7 @@ export const Details: React.FunctionComponent<Props> = ({ data, year }) => {
   return (
     <div>
       <div
-        className="mt-10 w-0 underline font-bold cursor-pointer"
+        className="mt-10 w-0 underline font-bold cursor-pointer text-purple-600 transition duration-300 hover:text-purple-300"
         onClick={(e) => setIsExpand(!isExpand)}
       >
         {year}
@@ -41,12 +44,16 @@ export const Details: React.FunctionComponent<Props> = ({ data, year }) => {
         ) : (
           data.map((item, idx) => (
             <div key={idx} className="inline relative m-1">
-              <button className="px-2 font-semibold m-1 bg-purple-200 text-purple-800 rounded-md shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1">
-                {item.date}
-              </button>
-              <div className="z-10 text-green-700 absolute top-0 right-0 mt-1">
-                <FontAwesomeIcon icon={faCheck} />
-              </div>
+              <Link href={`/details/[id]`} as={`/details/${item.id}`}>
+                <a>
+                  <button className="px-2 font-semibold m-1 bg-purple-200 text-purple-800 rounded-md shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1">
+                    {item.id}
+                  </button>
+                  <div className="z-10 text-green-700 absolute top-0 right-0 mt-1">
+                    <FontAwesomeIcon icon={faCheck} />
+                  </div>
+                </a>
+              </Link>
             </div>
           ))
         )}
@@ -54,3 +61,5 @@ export const Details: React.FunctionComponent<Props> = ({ data, year }) => {
     </div>
   );
 };
+
+export default Details;

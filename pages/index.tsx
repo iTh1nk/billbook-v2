@@ -1,22 +1,19 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Layout } from "../components/Layout";
 import { Container } from "../components/Container";
-import { getNews } from "./api/news/index";
-import { Details } from "../components/Details";
+import Details from "../components/Details";
 
-interface Data {
+interface NewData {
   id: number;
-  title: string;
+  category: string;
+  psItems: [];
+  created_at: string;
 }
 interface Props {
-  data: Array<Data>;
+  data: Array<NewData>;
 }
 
-const tempYear = ["2019", "2020", "2021"];
-
 const Index: React.FunctionComponent<Props> = ({ data }) => {
-  const [isExpand, setIsExpand] = useState<boolean>(true);
-
   return (
     <Layout title="Bill Book">
       <Container>
@@ -37,11 +34,12 @@ const Index: React.FunctionComponent<Props> = ({ data }) => {
         {/* End - Main section: balance */}
 
         {/* Start - Monthly Details Btn */}
-        {tempYear.reverse().map((item, idx) => (
+        {data.map((item, idx) => (
           <Details
-            key={idx}
-            year={item}
-            data={[{ date: "01.25" }, { date: "02.25" }, { date: "02.25" }]}
+            key={item.id}
+            year={item.created_at.substring(11,18)}
+            id={item.id}
+            data={item.psItems}
           />
         ))}
         {/* End - Monthly Details Btn */}
@@ -50,14 +48,14 @@ const Index: React.FunctionComponent<Props> = ({ data }) => {
   );
 };
 
-// export async function getStaticProps() {
-//   const res = await getNews();
-//   const data = await res.json();
-//   return {
-//     props: {
-//       data,
-//     },
-//   };
-// }
+export async function getStaticProps() {
+  const res = await fetch(process.env.NEXT_PUBLIC_API);
+  const data = await res.json();
+  return {
+    props: {
+      data,
+    },
+  };
+}
 
 export default Index;
