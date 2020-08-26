@@ -1,5 +1,11 @@
-import axios from "axios";
+const Axios = require("axios");
 
-export function getNews() {
-  return fetch("http://123.56.182.61:8070/api/v1/news/get");
-}
+export default (req, res) => {
+  Axios.get("http://123.56.182.61:8070/api/v1/news/get")
+    .then((resp) => {
+      res.json(resp.data);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};

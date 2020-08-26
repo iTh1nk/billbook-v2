@@ -1,17 +1,18 @@
-import React, { useState } from 'react';
+import React, { useState } from "react";
+import Admin from "../../components/Admin";
 
-interface Props {
-
-}
+interface Props {}
 
 const Statement: React.FunctionComponent<Props> = ({}) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   return (
     <div>
-      <h1>We0m Custom</h1>
+      <Admin>
+        <div>Statement</div>
+      </Admin>
     </div>
-  )
-}
+  );
+};
 
-export default Statement
+export default Statement;

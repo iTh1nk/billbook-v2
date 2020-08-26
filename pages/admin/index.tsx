@@ -1,31 +1,23 @@
 import React, { useState } from "react";
 import { Layout } from "../../components/Layout";
-import { Container } from "../../components/Container";
+import Admin from "../../components/Admin";
 
 interface Props {}
 
-const Admin: React.FunctionComponent<Props> = ({}) => {
+const Home: React.FunctionComponent<Props> = ({}) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   return (
     <div>
-      <Layout title="Admin">
-        <Container>
-          <div className="text-center">
-            <span className="we-admin-title">Home</span>
-            <span className="m-2 cursor-default"> | </span>
-            <span className="we-admin-title">Cycle</span>
-            <span className="m-2 cursor-default"> | </span>
-            <span className="we-admin-title">Statement</span>
-            <span className="m-2 cursor-default"> | </span>
-            <span className="we-admin-title">Activity</span>
-            <span className="m-2 cursor-default"> | </span>
-            <span className="we-admin-title">User</span>
-          </div>
-        </Container>
-      </Layout>
+      <Admin>
+        <div className="mt-32 text-center transition duration-500 transform hover:-translate-y-1">
+          <span className="font-mono w-0 cursor-default text-3xl text-green-500">
+            Welcome . . .
+          </span>
+        </div>
+      </Admin>
     </div>
   );
 };
 
-export default Admin;
+export default Home;

@@ -4,6 +4,7 @@ import * as Yup from "yup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNotch, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { Modal } from "./Modal";
+import Axios from "axios";
 
 interface Values {
   username: string;
@@ -43,10 +44,28 @@ export const LoginForm: React.FunctionComponent<LoginFormProps> = (props) => {
             values: Values,
             { setSubmitting }: FormikHelpers<Values>
           ) => {
-            setTimeout(() => {
-              alert(JSON.stringify(values, null, 2));
-              setSubmitting(false);
-            }, 2000);
+            // Axios.post(
+            //   "https://api.we0mmm.site/api/login/",
+            //   {
+            //     username: values.username,
+            //     password: values.password,
+            //   },
+            //   {
+            //     withCredentials: true,
+            //   }
+            // )
+            //   .then((resp) => {
+            //     setSubmitting(false);
+            //     console.log(resp.data);
+            //   })
+            //   .catch((err) => {
+            //     setSubmitting(false);
+            //     console.log(err.response);
+            //   });
+            // setTimeout(() => {
+            //   alert(JSON.stringify(values, null, 2));
+            //   setSubmitting(false);
+            // }, 2000);
           }}
         >
           {({

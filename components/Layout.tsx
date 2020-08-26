@@ -29,7 +29,7 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
   return (
     <div className="flex flex-col h-screen justify-between">
       <Head>
-        <title>{title}</title>
+        <title>{title || "Billbook"}</title>
         <meta charSet="utf-8" />
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>

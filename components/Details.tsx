@@ -27,7 +27,7 @@ const Details: React.FunctionComponent<Props> = ({ data, year }) => {
   return (
     <div>
       <div
-        className="mt-10 w-0 underline font-bold cursor-pointer text-gray-600 transition duration-300 hover:text-gray-300"
+        className="mt-10 w-0 underline font-bold cursor-pointer text-gray-500 transition duration-300 hover:text-gray-300"
         onClick={(e) => setIsExpand(!isExpand)}
       >
         {year}
