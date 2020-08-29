@@ -3,18 +3,30 @@ import { Layout } from "../components/Layout";
 import { Container } from "../components/Container";
 import Details from "../components/Details";
 import { IsLoadingSkeleton } from "../components/IsLoadingSkeleton";
+import moment from "moment";
 
-interface NewData {
+type CycleStatements = {
   id: number;
-  category: string;
-  psItems: [];
-  created_at: string;
-}
+  balance: string;
+  notes: string;
+  createdAt: string;
+  updateAt: string;
+  user: string;
+  cycle: number;
+};
+type DetailsData = {
+  date: string;
+  createdAt: string;
+  updatedAt: string;
+  cycle_statements: Array<CycleStatements>;
+  id: number;
+};
 interface Props {
-  data: Array<NewData>;
+  data0: Array<DetailsData>;
+  year: Array<string>;
 }
 
-const Index: React.FunctionComponent<Props> = ({ data }) => {
+const Index: React.FunctionComponent<Props> = ({ data0, year }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   return (
@@ -30,17 +42,14 @@ const Index: React.FunctionComponent<Props> = ({ data }) => {
         {/* End - Main section: balance */}
 
         {/* Start - Monthly Details Btn */}
-        {!!data ? (
-          data.map((item, idx) => (
-            <Details
-              key={item.id}
-              year={item.created_at.substring(11, 18)}
-              id={item.id}
-              data={item.psItems}
-            />
+        {!!year ? (
+          year.map((item, idx) => (
+            <Details key={idx} year={item} data0={data0} />
           ))
         ) : (
-          <IsLoadingSkeleton />
+          <div className="mt-5">
+            <IsLoadingSkeleton />
+          </div>
         )}
         {/* End - Monthly Details Btn */}
       </Container>
@@ -49,13 +58,25 @@ const Index: React.FunctionComponent<Props> = ({ data }) => {
 };
 
 export async function getStaticProps() {
-  const res = await fetch(process.env.NEXT_PUBLIC_API);
-  const data = await res.json();
-  return {
-    props: {
-      data,
-    },
-  };
+  try {
+    const res = await fetch("http://localhost:3000/api/cycles/get/");
+    const data = await res.json();
+    const data0 = data.data;
+    const year = data.year;
+    return {
+      props: {
+        data0,
+        year,
+      },
+    };
+  } catch (err) {
+    console.log(err);
+    return {
+      props: {
+        data: null,
+      },
+    };
+  }
 }
 
 export default Index;

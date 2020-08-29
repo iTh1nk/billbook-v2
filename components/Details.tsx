@@ -3,18 +3,30 @@ import { IsLoadingSkeleton } from "./IsLoadingSkeleton";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
+import moment from "moment";
 
-type DetailsData = {
-  date: string;
+type CycleStatements = {
   id: number;
+  balance: string;
+  notes: string;
+  createdAt: string;
+  updateAt: string;
+  user: string;
+  cycle: number;
+};
+type Cycles = {
+  id: number;
+  date: string;
+  createdAt: string;
+  updatedAt: string;
 };
 interface Props {
-  data: Array<DetailsData>;
+  data?: Array<CycleStatements>;
+  data0: Array<Cycles>;
   year: string;
-  id: number;
 }
 
-const Details: React.FunctionComponent<Props> = ({ data, year }) => {
+const Details: React.FunctionComponent<Props> = ({ data0, year }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isExpand, setIsExpand] = useState<boolean>(true);
 
@@ -39,20 +51,22 @@ const Details: React.FunctionComponent<Props> = ({ data, year }) => {
             : "invisible duration-500 opacity-0 ") + "mt-2"
         }
       >
-        {data.map((item, idx) => (
-          <div key={idx} className="inline relative m-1">
-            <Link href={`/details/[id]`} as={`/details/${item.id}`}>
-              <a>
-                <button className="px-5 outline-none font-semibold m-1 bg-gray-300 text-gray-800 rounded-md shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1">
-                  <span className="px-1">{item.id}</span>
-                </button>
-                <div className="z-10 text-green-700 absolute top-0 right-0 mt-1">
-                  <FontAwesomeIcon icon={faCheck} />
-                </div>
-              </a>
-            </Link>
-          </div>
-        ))}
+        {data0.map((item, idx) =>
+          moment(item.date, "YYYY-MM-DD").format("YYYY") === year ? (
+            <div key={item.id} className="inline relative m-1">
+              <Link href={`/details/[id]`} as={`/details/`}>
+                <a>
+                  <button className="px-5 outline-none font-semibold m-1 bg-gray-300 text-gray-800 rounded-md shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1">
+                    <span className="px-1">{item.date}</span>
+                  </button>
+                  <div className="z-10 text-green-700 absolute top-0 right-0 mt-1">
+                    <FontAwesomeIcon icon={faCheck} />
+                  </div>
+                </a>
+              </Link>
+            </div>
+          ) : null
+        )}
       </div>
     </div>
   );
