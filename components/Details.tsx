@@ -54,7 +54,7 @@ const Details: React.FunctionComponent<Props> = ({ data0, year }) => {
         {data0.map((item, idx) =>
           moment(item.date, "YYYY-MM-DD").format("YYYY") === year ? (
             <div key={item.id} className="inline relative m-1">
-              <Link href={`/details/[id]`} as={`/details/`}>
+              <Link href={`/details/[cycleId]`} as={`/details/${item.id}`}>
                 <a>
                   <button className="px-5 outline-none font-semibold m-1 bg-gray-300 text-gray-800 rounded-md shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1">
                     <span className="px-1">{item.date}</span>
