@@ -30,14 +30,21 @@ interface Props {
 
 const Details: React.FunctionComponent<Props> = ({ data0, year, cbLogin }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [cycleRead, setCycleRead] = useState<string>();
   const [isExpand, setIsExpand] = useState<boolean>(true);
   const { isAuthenticated } = useContext(AssignContext);
 
   useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 1000);
-  }, []);
+    setCycleRead(localStorage.getItem("cycleRead"));
+  });
+
+  const markCycleRead = (cycle) => {
+    localStorage.setItem("cycleRead", cycleRead + "," + cycle);
+  };
+  const chkCycleRead = (cycle) => {
+    let spArr = localStorage.getItem("cycleRead")?.split(",");
+    return spArr?.includes(cycle);
+  };
 
   return (
     <div>
@@ -60,13 +67,18 @@ const Details: React.FunctionComponent<Props> = ({ data0, year, cbLogin }) => {
               {isAuthenticated ? (
                 <Link href={`/details/[cycleId]`} as={`/details/${item.id}`}>
                   <a>
-                    <button className="px-3 outline-none font-semibold m-2 bg-gray-300 text-gray-800 rounded-md shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1">
+                    <button
+                      onClick={() => markCycleRead(item.date)}
+                      className="px-3 outline-none font-semibold m-2 bg-gray-300 text-gray-800 rounded-md shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1"
+                    >
                       <span className="px-1">
                         {item.date.substring(5, item.date.length)}
                       </span>
                     </button>
                     <div className="z-10 text-green-700 absolute top-0 right-0 mt-1">
-                      <FontAwesomeIcon icon={faCheck} />
+                      {chkCycleRead(item.date) ? (
+                        <FontAwesomeIcon icon={faCheck} />
+                      ) : null}
                     </div>
                   </a>
                 </Link>

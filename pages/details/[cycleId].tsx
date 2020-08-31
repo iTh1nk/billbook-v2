@@ -21,13 +21,36 @@ interface Props {
 
 const Details: React.FunctionComponent<Props> = ({ detail }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  
+
   return (
     <Layout title="Monthly Details">
       <Container>
-        {detail.cycle_statements?.map((item, idx) => (
-          <div key={item.id}>{item.balance}</div>
-        ))}
+        <div className="flex justify-center">
+          <table className="table-auto text-center">
+            <thead>
+              <tr>
+                <th className="py-10 px-5 md:py-10 md:px-10 border-b-2 text-gray-500 text-xl font-mono">
+                  User
+                </th>
+                <th className="py-10 px-5 md:py-10 md:px-10 border-b-2 text-gray-500 text-xl font-mono">
+                  Balance
+                </th>
+                <th className="py-10 px-5 md:py-10 md:px-10 border-b-2 text-gray-500 text-xl font-mono">
+                  Notes
+                </th>
+              </tr>
+            </thead>
+            <tbody>
+              {detail.cycle_statements?.map((item, idx) => (
+                <tr key={item.id} className="hover:bg-gray-900">
+                  <td className="py-5">8731</td>
+                  <td className="py-5">${item.balance}</td>
+                  <td className="py-5">{item.notes}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
       </Container>
     </Layout>
   );

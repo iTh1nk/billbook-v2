@@ -57,11 +57,16 @@ const Index: React.FunctionComponent<Props> = ({ data0, year }) => {
           {/* Start - Main section: balance */}
           {isAuthenticated ? (
             <div className="flex justify-center">
-              <div className="z-0 w-full  bg-gradient-to-r from-teal-600 to-blue-500 p-4 rounded-lg flex flex-wrap justify-start items-end transition duration-300 ease-in-out transform hover:scale-98">
-                <div className="py-5 md:inline">Balance as of cycle: </div>
-                <div className="text-6xl mt-5 ml-5 animate-bounce-slow md:inline">
+              <div className="z-0 w-full bg-gradient-to-r from-teal-600 to-blue-500 p-4 rounded-lg flex flex-wrap justify-start items-end transition duration-300 ease-in-out transform hover:scale-98">
+                <div className="py-5 md:inline font-semibold">
+                  Balance as of cycle:{" "}
+                </div>
+                <div className="text-6xl mt-5 ml-5 animate-bounce-slow md:inline font-mono font-semibold">
                   ${balance}
                 </div>
+                <button className="border py-1 px-3 mb-5 rounded-md ml-5 bg-gradient-to-r from-teal-600 to-blue-500 font-semibold hover:text-green-200 hover:bg-blue-500 hover:border-green-300 outline-none">
+                  Got it
+                </button>
               </div>
             </div>
           ) : (

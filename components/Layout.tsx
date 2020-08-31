@@ -102,7 +102,7 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
             <a
               className={
                 (isAuthenticated ? "" : " hidden ") +
-                " text-red-500 block mt-2 ml-4 transition duration-500 ease-in-out hover:text-red-300 lg:light:text-black cursor-pointer"
+                " text-red-500 block mt-5 md:mt-2 ml-4 transition duration-500 ease-in-out hover:text-red-300 lg:light:text-black cursor-pointer"
               }
             >
               Logout
@@ -113,7 +113,7 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
               <a
                 className={
                   (isAuthenticated ? "" : " hidden ") +
-                  " block mt-2 ml-4 transition duration-500 ease-in-out hover:text-white lg:light:text-black"
+                  " block mt-5 md:mt-2 ml-4 transition duration-500 ease-in-out hover:text-white lg:light:text-black"
                 }
               >
                 Admin
@@ -124,7 +124,7 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
             <a
               className={
                 (isAuthenticated ? " hidden " : "") +
-                " block mt-2 ml-4 transition duration-500 ease-in-out hover:text-white lg:light:text-black cursor-pointer"
+                " block mt-5 md:mt-2 ml-4 transition duration-500 ease-in-out hover:text-white lg:light:text-black cursor-pointer"
               }
             >
               Login
@@ -132,7 +132,7 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
           </div>
           <div
             onClick={(e) => setIsModalNotes(!isModalNotes)}
-            className="block mt-2 ml-4 transition duration-500 ease-in-out hover:text-white lg:light:text-black cursor-pointer animate-pulse"
+            className="block mt-5 md:mt-2 mb-3 md:mb-0 ml-4 md:ml-10 transition duration-500 ease-in-out hover:text-white lg:light:text-black cursor-pointer animate-pulse"
           >
             _NEXT
           </div>
