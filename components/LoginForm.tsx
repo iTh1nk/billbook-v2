@@ -1,10 +1,12 @@
-import React, { useState } from "react";
+import React, { useState, useContext } from "react";
 import { Formik, Field, Form, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleNotch, faUndo } from "@fortawesome/free-solid-svg-icons";
 import { Modal } from "./Modal";
 import Axios from "axios";
+import { useRouter } from "next/router";
+import { AssignContext } from "./AssignContext";
 
 interface Values {
   username: string;
@@ -12,17 +14,20 @@ interface Values {
 }
 interface LoginFormProps {
   isModal: boolean;
-  cb: (e: any) => void;
+  cb: any;
 }
 
 export const LoginForm: React.FunctionComponent<LoginFormProps> = (props) => {
+  const router = useRouter();
+  const { isAuthenticated, setIsAuthenticated } = useContext(AssignContext);
+
   return (
     <Modal
       title="Login"
       isModal={props.isModal}
       isNotConfirmBtn={true}
       isNotClose={true}
-      cbIsModal={props.cb}
+      cbIsModal={() => props.cb()}
     >
       <div className="w-full max-w-xs ml-2">
         <Formik
@@ -44,28 +49,24 @@ export const LoginForm: React.FunctionComponent<LoginFormProps> = (props) => {
             values: Values,
             { setSubmitting }: FormikHelpers<Values>
           ) => {
-            // Axios.post(
-            //   "https://api.we0mmm.site/api/login/",
-            //   {
-            //     username: values.username,
-            //     password: values.password,
-            //   },
-            //   {
-            //     withCredentials: true,
-            //   }
-            // )
-            //   .then((resp) => {
-            //     setSubmitting(false);
-            //     console.log(resp.data);
-            //   })
-            //   .catch((err) => {
-            //     setSubmitting(false);
-            //     console.log(err.response);
-            //   });
-            // setTimeout(() => {
-            //   alert(JSON.stringify(values, null, 2));
-            //   setSubmitting(false);
-            // }, 2000);
+            let dataToSubmit = {
+              email: values.username + "@we0mmm.site",
+              password: values.password,
+            };
+            Axios.post(
+              process.env.NEXT_PUBLIC_API + "auth/login/",
+              dataToSubmit
+            )
+              .then((resp) => {
+                setSubmitting(false);
+                localStorage.setItem("auth", resp.data.token);
+                setIsAuthenticated(true);
+                props.cb();
+              })
+              .catch((err) => {
+                setSubmitting(false);
+                console.log(err, err.response);
+              });
           }}
         >
           {({

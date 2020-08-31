@@ -26,7 +26,7 @@ export const Modal: React.FunctionComponent<ModalProps> = (props) => {
       className={
         (props.isModal
           ? " duration-500 opacity-100 "
-          : " duration-300 opacity-0 invisible ") + "flex justify-center z-10"
+          : " duration-300 opacity-0 invisible ") + "flex justify-center z-50"
       }
     >
       <div

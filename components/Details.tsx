@@ -56,7 +56,7 @@ const Details: React.FunctionComponent<Props> = ({ data0, year }) => {
             <div key={item.id} className="inline relative m-1">
               <Link href={`/details/[cycleId]`} as={`/details/${item.id}`}>
                 <a>
-                  <button className="px-5 outline-none font-semibold m-1 bg-gray-300 text-gray-800 rounded-md shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1">
+                  <button className="px-5 outline-none font-semibold m-2 bg-gray-300 text-gray-800 rounded-md shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1">
                     <span className="px-1">{item.date}</span>
                   </button>
                   <div className="z-10 text-green-700 absolute top-0 right-0 mt-1">

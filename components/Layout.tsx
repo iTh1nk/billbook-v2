@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useContext, useRef } from "react";
 import Link from "next/link";
 import Head from "next/head";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -6,25 +6,32 @@ import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { LoginForm } from "./LoginForm";
 import { Rnotes } from "./Rnotes";
 import { Welcome } from "./Welcom";
+import { AssignContext } from "./AssignContext";
 
 interface LayoutProps {
   title?: string;
+  showLogin?: boolean;
 }
 let welcomeDismiss: string = "";
 
 export const Layout: React.FunctionComponent<LayoutProps> = ({
   children,
   title,
+  showLogin,
 }) => {
   const [isExpand, setIsExpand] = useState<boolean>(false);
   const [isModalNotes, setIsModalNotes] = useState<boolean>(false);
   const [isModalLogin, setIsModalLogin] = useState<boolean>(false);
   const [isModalWelcome, setIsModalWelcome] = useState<boolean>(true);
+  const { isAuthenticated, setIsAuthenticated } = useContext(AssignContext);
 
+  const chkFirstTime = useRef(true);
   useEffect(() => {
     welcomeDismiss = localStorage.getItem("welcomeDismiss");
     setIsModalWelcome(welcomeDismiss !== "yes");
-  }, []);
+    if (!chkFirstTime.current) setIsModalLogin(!isModalLogin);
+    if (chkFirstTime.current) chkFirstTime.current = false;
+  }, [showLogin]);
 
   return (
     <div className="flex flex-col h-screen justify-between">
@@ -47,7 +54,12 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
           </div>
           <div>
             <Link href="/profile">
-              <a className="text-green-400 light:text-green-800 transition duration-500 ease-in-out hover:text-green-200 md:ml-4">
+              <a
+                className={
+                  (isAuthenticated ? "" : " hidden ") +
+                  " text-green-400 light:text-green-800 transition duration-500 ease-in-out hover:text-green-200 md:ml-4"
+                }
+              >
                 Hi, Mac
               </a>
             </Link>
@@ -79,21 +91,46 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
         </div>
 
         <nav className={(isExpand ? "" : " hidden ") + "md:flex"}>
+          <div
+            onClick={() => {
+              setIsAuthenticated(false);
+              localStorage.removeItem("auth");
+            }}
+          >
+            <a
+              className={
+                (isAuthenticated ? "" : " hidden ") +
+                " text-red-500 block mt-2 ml-4 transition duration-500 ease-in-out hover:text-red-300 lg:light:text-black cursor-pointer"
+              }
+            >
+              Logout
+            </a>
+          </div>
           <Link href="/admin">
-            <a className="block mt-2 ml-4 transition duration-500 ease-in-out hover:text-white lg:light:text-black">
+            <a
+              className={
+                (isAuthenticated ? "" : " hidden ") +
+                " block mt-2 ml-4 transition duration-500 ease-in-out hover:text-white lg:light:text-black"
+              }
+            >
               Admin
             </a>
           </Link>
           <div onClick={(e) => setIsModalLogin(!isModalLogin)}>
-            <a className="block mt-2 ml-4 transition duration-500 ease-in-out hover:text-white lg:light:text-black cursor-pointer">
+            <a
+              className={
+                (isAuthenticated ? " hidden " : "") +
+                " block mt-2 ml-4 transition duration-500 ease-in-out hover:text-white lg:light:text-black cursor-pointer"
+              }
+            >
               Login
             </a>
           </div>
           <div
             onClick={(e) => setIsModalNotes(!isModalNotes)}
-            className="block mt-2 ml-4 transition duration-500 ease-in-out hover:text-white lg:light:text-black cursor-pointer"
+            className="block mt-2 ml-4 transition duration-500 ease-in-out hover:text-white lg:light:text-black cursor-pointer animate-pulse"
           >
-            Notes
+            _NEXT
           </div>
         </nav>
       </header>
