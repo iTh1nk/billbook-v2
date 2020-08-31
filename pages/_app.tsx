@@ -5,10 +5,12 @@ import Axios from "axios";
 import { AssignContext } from "../components/AssignContext";
 import { IsLoadingSkeleton } from "../components/IsLoadingSkeleton";
 import IsLoading from "../components/IsLoading";
+import jwtDecode from "jwt-decode";
 
 function MyApp({ Component, pageProps }) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [isAuthenticated, setIsAuthenticated] = useState<boolean>();
+  const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
+  const [userLoggedIn, setUserLoggedIn] = useState<Array<string>>([]);
 
   useEffect(() => {
     Axios.post(
@@ -23,18 +25,30 @@ function MyApp({ Component, pageProps }) {
       .then((resp) => {
         if (resp.data.message === "pass") setIsAuthenticated(true);
         setIsLoading(false);
+        setUserLoggedIn([
+          jwtDecode(
+            localStorage.getItem("auth").split("Bearer ").join("")
+          ).email.split("@")[0],
+          jwtDecode(localStorage.getItem("auth").split("Bearer ").join(""))
+            .user_id,
+        ]);
+        console.log(
+          jwtDecode(localStorage.getItem("auth").split("Bearer ").join(""))
+        );
       })
       .catch((err) => {
         setIsAuthenticated(false);
         setIsLoading(false);
         console.log(err, err.response);
       });
-  });
+  }, [isAuthenticated]);
 
   if (isLoading) return <IsLoading />;
 
   return (
-    <AssignContext.Provider value={{ isAuthenticated, setIsAuthenticated }}>
+    <AssignContext.Provider
+      value={{ isAuthenticated, setIsAuthenticated, userLoggedIn }}
+    >
       <Component {...pageProps} />
     </AssignContext.Provider>
   );

@@ -6,6 +6,7 @@ import { IsLoadingSkeleton } from "../components/IsLoadingSkeleton";
 import moment from "moment";
 import { AssignContext } from "../components/AssignContext";
 import { LoginForm } from "../components/LoginForm";
+import Axios from "axios";
 
 type CycleStatements = {
   id: number;
@@ -29,8 +30,25 @@ interface Props {
 }
 
 const Index: React.FunctionComponent<Props> = ({ data0, year }) => {
-  const { isAuthenticated } = useContext(AssignContext);
+  const { isAuthenticated, userLoggedIn } = useContext(AssignContext);
   const [isModalLogin, setIsModalLogin] = useState<boolean>(false);
+  const [balance, setBalance] = useState<string>("");
+
+  useEffect(() => {
+    Axios.get(
+      process.env.NEXT_PUBLIC_API + "auth/get/" + userLoggedIn[1] + "/",
+      {
+        headers: { Authorization: localStorage.getItem("auth") },
+      }
+    )
+      .then((resp) => {
+        setBalance(resp.data.user_activities[0].totalBalance);
+        console.log(resp.data);
+      })
+      .catch((err) => {
+        console.log(err, err.response);
+      });
+  }, [userLoggedIn]);
 
   return (
     <>
@@ -42,7 +60,7 @@ const Index: React.FunctionComponent<Props> = ({ data0, year }) => {
               <div className="z-0 w-full  bg-gradient-to-r from-teal-600 to-blue-500 p-4 rounded-lg flex flex-wrap justify-start items-end transition duration-300 ease-in-out transform hover:scale-98">
                 <div className="py-5 md:inline">Balance as of cycle: </div>
                 <div className="text-6xl mt-5 ml-5 animate-bounce-slow md:inline">
-                  $100
+                  ${balance}
                 </div>
               </div>
             </div>
@@ -56,8 +74,7 @@ const Index: React.FunctionComponent<Props> = ({ data0, year }) => {
                     className="cursor-pointer underline"
                   >
                     Login
-                  </span>{" "}
-                  to show details...
+                  </span>
                 </div>
               </div>
             </div>
@@ -65,17 +82,20 @@ const Index: React.FunctionComponent<Props> = ({ data0, year }) => {
           {/* End - Main section: balance */}
 
           {/* Start - Monthly Details Btn */}
-          {isAuthenticated ? (
-            !!year ? (
-              year.map((item, idx) => (
-                <Details key={idx} year={item} data0={data0} />
-              ))
-            ) : (
-              <div className="mt-5">
-                <IsLoadingSkeleton />
-              </div>
-            )
-          ) : null}
+          {!!year ? (
+            year.map((item, idx) => (
+              <Details
+                key={idx}
+                year={item}
+                data0={data0}
+                cbLogin={() => setIsModalLogin(!isModalLogin)}
+              />
+            ))
+          ) : (
+            <div className="mt-5">
+              <IsLoadingSkeleton />
+            </div>
+          )}
           {/* End - Monthly Details Btn */}
         </Container>
       </Layout>

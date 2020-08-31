@@ -23,7 +23,9 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
   const [isModalNotes, setIsModalNotes] = useState<boolean>(false);
   const [isModalLogin, setIsModalLogin] = useState<boolean>(false);
   const [isModalWelcome, setIsModalWelcome] = useState<boolean>(true);
-  const { isAuthenticated, setIsAuthenticated } = useContext(AssignContext);
+  const { isAuthenticated, setIsAuthenticated, userLoggedIn } = useContext(
+    AssignContext
+  );
 
   const chkFirstTime = useRef(true);
   useEffect(() => {
@@ -60,7 +62,7 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
                   " text-green-400 light:text-green-800 transition duration-500 ease-in-out hover:text-green-200 md:ml-4"
                 }
               >
-                Hi, Mac
+                Hi, {userLoggedIn[0]}
               </a>
             </Link>
           </div>
@@ -106,16 +108,18 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
               Logout
             </a>
           </div>
-          <Link href="/admin">
-            <a
-              className={
-                (isAuthenticated ? "" : " hidden ") +
-                " block mt-2 ml-4 transition duration-500 ease-in-out hover:text-white lg:light:text-black"
-              }
-            >
-              Admin
-            </a>
-          </Link>
+          {userLoggedIn[0] === "mac" ? (
+            <Link href="/admin">
+              <a
+                className={
+                  (isAuthenticated ? "" : " hidden ") +
+                  " block mt-2 ml-4 transition duration-500 ease-in-out hover:text-white lg:light:text-black"
+                }
+              >
+                Admin
+              </a>
+            </Link>
+          ) : null}
           <div onClick={(e) => setIsModalLogin(!isModalLogin)}>
             <a
               className={
