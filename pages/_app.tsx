@@ -32,9 +32,6 @@ function MyApp({ Component, pageProps }) {
           id: jwtDecode(localStorage.getItem("auth").split("Bearer ").join(""))
             .user_id,
         });
-        console.log(
-          jwtDecode(localStorage.getItem("auth").split("Bearer ").join(""))
-        );
       })
       .catch((err) => {
         setIsAuthenticated(false);

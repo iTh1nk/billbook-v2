@@ -15,10 +15,11 @@ interface Props {
 
 const AdminPanel: React.FunctionComponent<Props> = ({ children, cbTab }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const [isActive, setIsActive] = useState<string>("");
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row h-full mt-8">
+      <div className="flex flex-col md:flex-row h-full mt-6">
         <nav className="bg-gray-900 md:w-20 flex-row justify-start md:justify-between flex md:flex-col md:h-screen">
           <div className="md:mt-10 md:mb-10 mt-5 mb-3">
             <FontAwesomeIcon
@@ -30,8 +31,16 @@ const AdminPanel: React.FunctionComponent<Props> = ({ children, cbTab }) => {
               <div className="inline-block mb-5 ml-6 md:ml-0">
                 <span>
                   <div
-                    onClick={() => cbTab("post")}
-                    className="h-5 w-5 text-gray-300 mx-auto hover:text-green-500  cursor-pointer"
+                    onClick={() => {
+                      cbTab("post");
+                      setIsActive("post");
+                    }}
+                    className={
+                      (isActive === "post"
+                        ? " text-green-500 "
+                        : " text-gray-300 ") +
+                      "h-5 w-5 mx-auto hover:text-green-500  cursor-pointer"
+                    }
                   >
                     <FontAwesomeIcon icon={faPlus} />
                   </div>
@@ -40,20 +49,36 @@ const AdminPanel: React.FunctionComponent<Props> = ({ children, cbTab }) => {
               <div className="inline-block mb-5 ml-6 md:ml-0">
                 <span>
                   <div
-                    onClick={() => cbTab("update")}
-                    className="h-5 w-5 text-gray-300 mx-auto hover:text-green-500 cursor-pointer"
+                    onClick={() => {
+                      cbTab("delete");
+                      setIsActive("delete");
+                    }}
+                    className={
+                      (isActive === "delete"
+                        ? " text-green-500 "
+                        : " text-gray-300 ") +
+                      "h-5 w-5 mx-auto hover:text-green-500 cursor-pointer"
+                    }
                   >
-                    <FontAwesomeIcon icon={faEdit} />
+                    <FontAwesomeIcon icon={faMinus} />
                   </div>
                 </span>
               </div>
               <div className="inline-block mb-5 ml-6 md:ml-0">
                 <span>
                   <div
-                    onClick={() => cbTab("delete")}
-                    className="h-5 w-5 mx-auto text-gray-300 hover:text-green-500 cursor-pointer"
+                    onClick={() => {
+                      cbTab("update");
+                      setIsActive("update");
+                    }}
+                    className={
+                      (isActive === "update"
+                        ? " text-green-500 "
+                        : " text-gray-300 ") +
+                      "h-5 w-5 mx-auto hover:text-green-500 cursor-pointer"
+                    }
                   >
-                    <FontAwesomeIcon icon={faMinus} />
+                    <FontAwesomeIcon icon={faEdit} />
                   </div>
                 </span>
               </div>
@@ -71,8 +96,16 @@ const AdminPanel: React.FunctionComponent<Props> = ({ children, cbTab }) => {
                 <li className="mb-6">
                   <span>
                     <div
-                      onClick={() => cbTab("post")}
-                      className="h-5 w-5 text-gray-300 mx-auto hover:text-green-500  cursor-pointer"
+                      onClick={() => {
+                        cbTab("post");
+                        setIsActive("post");
+                      }}
+                      className={
+                        (isActive === "post"
+                          ? " text-green-500 "
+                          : " text-gray-300 ") +
+                        "h-5 w-5 mx-auto hover:text-green-500  cursor-pointer"
+                      }
                     >
                       <FontAwesomeIcon icon={faPlus} />
                     </div>
@@ -81,20 +114,36 @@ const AdminPanel: React.FunctionComponent<Props> = ({ children, cbTab }) => {
                 <li className="mb-6">
                   <span>
                     <div
-                      onClick={() => cbTab("update")}
-                      className="h-5 w-5 text-gray-300 mx-auto hover:text-green-500 cursor-pointer"
+                      onClick={() => {
+                        cbTab("delete");
+                        setIsActive("delete");
+                      }}
+                      className={
+                        (isActive === "delete"
+                          ? " text-green-500 "
+                          : " text-gray-300 ") +
+                        "h-5 w-5 mx-auto hover:text-green-500 cursor-pointer"
+                      }
                     >
-                      <FontAwesomeIcon icon={faEdit} />
+                      <FontAwesomeIcon icon={faMinus} />
                     </div>
                   </span>
                 </li>
                 <li className="mb-6">
                   <span>
                     <div
-                      onClick={() => cbTab("delete")}
-                      className="h-5 w-5 mx-auto text-gray-300 hover:text-green-500 cursor-pointer"
+                      onClick={() => {
+                        cbTab("update");
+                        setIsActive("update");
+                      }}
+                      className={
+                        (isActive === "update"
+                          ? " text-green-500 "
+                          : " text-gray-300 ") +
+                        "h-5 w-5 mx-auto hover:text-green-500 cursor-pointer"
+                      }
                     >
-                      <FontAwesomeIcon icon={faMinus} />
+                      <FontAwesomeIcon icon={faEdit} />
                     </div>
                   </span>
                 </li>
