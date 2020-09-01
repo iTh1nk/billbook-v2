@@ -9,6 +9,9 @@ interface Props {
 
 const Admin: React.FunctionComponent<Props> = ({ children }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
+  const currentTab = window.location.href
+    .split("http://localhost:3000/admin/")
+    .join("");
 
   return (
     <div>
@@ -16,23 +19,63 @@ const Admin: React.FunctionComponent<Props> = ({ children }) => {
         <Container>
           <div className="text-center mb-5">
             <Link href="/admin">
-              <span className="we-admin-title">Home</span>
+              <span
+                className={
+                  currentTab === "http://localhost:3000/admin"
+                    ? "underline text-green-500"
+                    : "we-admin-title text-gray-300"
+                }
+              >
+                Home
+              </span>
             </Link>
             <span className="m-2 cursor-default"> | </span>
             <Link href="/admin/cycle">
-              <span className="we-admin-title">Cycle</span>
+              <span
+                className={
+                  currentTab === "cycle"
+                    ? "underline text-green-500"
+                    : "we-admin-title text-gray-300"
+                }
+              >
+                Cycle
+              </span>
             </Link>
             <span className="m-2 cursor-default"> | </span>
             <Link href="/admin/statement">
-              <span className="we-admin-title">Statement</span>
+              <span
+                className={
+                  currentTab === "statement"
+                    ? "underline text-green-500"
+                    : "we-admin-title text-gray-300"
+                }
+              >
+                Statement
+              </span>
             </Link>
             <span className="m-2 cursor-default"> | </span>
             <Link href="/admin/activity">
-              <span className="we-admin-title">Activity</span>
+              <span
+                className={
+                  currentTab === "activity"
+                    ? "underline text-green-500"
+                    : "we-admin-title text-gray-300"
+                }
+              >
+                Activity
+              </span>
             </Link>
             <span className="m-2 cursor-default"> | </span>
             <Link href="/admin/user">
-              <span className="we-admin-title">User</span>
+              <span
+                className={
+                  currentTab === "user"
+                    ? "underline text-green-500"
+                    : "we-admin-title text-gray-300"
+                }
+              >
+                User
+              </span>
             </Link>
           </div>
           {children}

@@ -6,12 +6,14 @@ import {
   faEdit,
   faPlus,
 } from "@fortawesome/free-solid-svg-icons";
+import { faReact } from "@fortawesome/free-brands-svg-icons";
 
 interface Props {
   children: React.ReactNode;
+  cbTab?: any;
 }
 
-const AdminPanel: React.FunctionComponent<Props> = ({ children }) => {
+const AdminPanel: React.FunctionComponent<Props> = ({ children, cbTab }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
 
   return (
@@ -19,90 +21,90 @@ const AdminPanel: React.FunctionComponent<Props> = ({ children }) => {
       <div className="flex flex-col md:flex-row h-full mt-8">
         <nav className="bg-gray-900 md:w-20 flex-row justify-start md:justify-between flex md:flex-col md:h-screen">
           <div className="md:mt-10 md:mb-10 mt-5 mb-3">
-            <a href="#">
-              <img
-                src="https://randomuser.me/api/portraits/women/76.jpg"
-                className="rounded-full w-10 h-10 mb-3 mx-auto inline-block md:block ml-6 md:ml-3"
-              />
-            </a>
+            <FontAwesomeIcon
+              icon={faReact}
+              className="rounded-full w-10 h-10 md:mb-12 animate-spin-slow mx-auto inline-block md:block ml-6 md:ml-3"
+            />
             {/* Small Screen Layout */}
-            <div className="mt-10 md:hidden inline">
-              <div className="inline-block mb-6 ml-6 md:ml-0">
-                <a href="#">
-                  <span>
-                    <div className="h-5 w-5 text-gray-300 mx-auto hover:text-green-500 ">
-                      <FontAwesomeIcon icon={faPlus} />
-                    </div>
-                  </span>
-                </a>
+            <div className=" md:hidden inline">
+              <div className="inline-block mb-5 ml-6 md:ml-0">
+                <span>
+                  <div
+                    onClick={() => cbTab("post")}
+                    className="h-5 w-5 text-gray-300 mx-auto hover:text-green-500  cursor-pointer"
+                  >
+                    <FontAwesomeIcon icon={faPlus} />
+                  </div>
+                </span>
               </div>
-              <div className="inline-block mb-6 ml-6 md:ml-0">
-                <a href="#">
-                  <span>
-                    <div className="h-5 w-5 text-gray-300 mx-auto hover:text-green-500">
-                      <FontAwesomeIcon icon={faEdit} />
-                    </div>
-                  </span>
-                </a>
+              <div className="inline-block mb-5 ml-6 md:ml-0">
+                <span>
+                  <div
+                    onClick={() => cbTab("update")}
+                    className="h-5 w-5 text-gray-300 mx-auto hover:text-green-500 cursor-pointer"
+                  >
+                    <FontAwesomeIcon icon={faEdit} />
+                  </div>
+                </span>
               </div>
-              <div className="inline-block mb-6 ml-6 md:ml-0">
-                <a href="#">
-                  <span>
-                    <div className="h-5 w-5 mx-auto text-gray-300 hover:text-green-500">
-                      <FontAwesomeIcon icon={faMinus} />
-                    </div>
-                  </span>
-                </a>
+              <div className="inline-block mb-5 ml-6 md:ml-0">
+                <span>
+                  <div
+                    onClick={() => cbTab("delete")}
+                    className="h-5 w-5 mx-auto text-gray-300 hover:text-green-500 cursor-pointer"
+                  >
+                    <FontAwesomeIcon icon={faMinus} />
+                  </div>
+                </span>
               </div>
-              <div className="inline-block  ml-6 md:ml-0">
-                <a href="#">
-                  <span>
-                    <div className="h-5 w-5 text-gray-300 mx-auto hover:text-green-500">
-                      <FontAwesomeIcon icon={faTools} />
-                    </div>
-                  </span>
-                </a>
-              </div>
+              {/* <div className="inline-block  ml-6 md:ml-0">
+                <span>
+                  <div className="h-5 w-5 text-gray-300 mx-auto hover:text-green-500 cursor-pointer">
+                    <FontAwesomeIcon icon={faTools} />
+                  </div>
+                </span>
+              </div> */}
             </div>
             {/* Large ScreenLayout */}
             <div className="md:inline mt-10 hidden">
               <ul>
                 <li className="mb-6">
-                  <a href="#">
-                    <span>
-                      <div className="h-5 w-5 text-gray-300 mx-auto hover:text-green-500 ">
-                        <FontAwesomeIcon icon={faPlus} />
-                      </div>
-                    </span>
-                  </a>
+                  <span>
+                    <div
+                      onClick={() => cbTab("post")}
+                      className="h-5 w-5 text-gray-300 mx-auto hover:text-green-500  cursor-pointer"
+                    >
+                      <FontAwesomeIcon icon={faPlus} />
+                    </div>
+                  </span>
                 </li>
                 <li className="mb-6">
-                  <a href="#">
-                    <span>
-                      <div className="h-5 w-5 text-gray-300 mx-auto hover:text-green-500">
-                        <FontAwesomeIcon icon={faEdit} />
-                      </div>
-                    </span>
-                  </a>
+                  <span>
+                    <div
+                      onClick={() => cbTab("update")}
+                      className="h-5 w-5 text-gray-300 mx-auto hover:text-green-500 cursor-pointer"
+                    >
+                      <FontAwesomeIcon icon={faEdit} />
+                    </div>
+                  </span>
                 </li>
                 <li className="mb-6">
-                  <a href="#">
-                    <span>
-                      <div className="h-5 w-5 mx-auto text-gray-300 hover:text-green-500">
-                        <FontAwesomeIcon icon={faMinus} />
-                      </div>
-                    </span>
-                  </a>
+                  <span>
+                    <div
+                      onClick={() => cbTab("delete")}
+                      className="h-5 w-5 mx-auto text-gray-300 hover:text-green-500 cursor-pointer"
+                    >
+                      <FontAwesomeIcon icon={faMinus} />
+                    </div>
+                  </span>
                 </li>
-                <li>
-                  <a href="#">
-                    <span>
-                      <div className="h-5 w-5 text-gray-300 mx-auto hover:text-green-500">
-                        <FontAwesomeIcon icon={faTools} />
-                      </div>
-                    </span>
-                  </a>
-                </li>
+                {/* <li>
+                  <span>
+                    <div className="h-5 w-5 text-gray-300 mx-auto hover:text-green-500 cursor-pointer">
+                      <FontAwesomeIcon icon={faTools} />
+                    </div>
+                  </span>
+                </li> */}
               </ul>
             </div>
           </div>

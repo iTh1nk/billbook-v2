@@ -19,7 +19,7 @@ type AdminUserState = {
 };
 
 const initialState: AdminUserState = {
-  tab: "",
+  tab: "post",
   isLoading: false,
   error: "",
   success: "",
@@ -35,7 +35,7 @@ const initialState: AdminUserState = {
 type AdminUserAction =
   | { type: "submitting" | "success" }
   | { type: "error"; payload: string }
-  | { type: "tab"; tabName: string; payload: string }
+  | { type: "tab"; tabName: string }
   | { type: "field"; fieldName: string; payload: string };
 
 function adminUserReducer(state: AdminUserState, action: AdminUserAction) {
@@ -43,7 +43,7 @@ function adminUserReducer(state: AdminUserState, action: AdminUserAction) {
     case "tab":
       return {
         ...state,
-        [action.tabName]: action.payload,
+        tab: action.tabName,
       };
     case "submitting":
       return {
@@ -86,7 +86,17 @@ const User: React.FunctionComponent<Props> = ({}) => {
   return (
     <div>
       <Admin>
-        <AdminPanel>User</AdminPanel>
+        <AdminPanel
+          cbTab={(tabName) => dispatch({ type: "tab", tabName: tabName })}
+        >
+          <div className={state.tab === "post" ? "inline" : "hidden"}>POST</div>
+          <div className={state.tab === "update" ? "inline" : "hidden"}>
+            UPDATE
+          </div>
+          <div className={state.tab === "delete" ? "inline" : "hidden"}>
+            DELETE
+          </div>
+        </AdminPanel>
       </Admin>
     </div>
   );
