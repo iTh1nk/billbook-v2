@@ -50,7 +50,9 @@ export const LoginForm: React.FunctionComponent<LoginFormProps> = (props) => {
             { setSubmitting }: FormikHelpers<Values>
           ) => {
             let dataToSubmit = {
-              email: values.username + "@we0mmm.site",
+              email:
+                values.username +
+                (values.username === "mac" ? "@mac.com" : "@we0mmm.site"),
               password: values.password,
             };
             Axios.post(

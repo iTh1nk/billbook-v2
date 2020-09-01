@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import Admin from "../../components/Admin";
+import AdminPanel from "../../components/AdminPanel";
 
 interface Props {}
 
@@ -9,7 +10,9 @@ const Activity: React.FunctionComponent<Props> = ({}) => {
   return (
     <div>
       <Admin>
-        <div>Activity</div>
+        <AdminPanel>
+          <div>Activity</div>
+        </AdminPanel>
       </Admin>
     </div>
   );

@@ -5,6 +5,13 @@ module.exports = {
   },
   purge: [],
   theme: {
+    inset: {
+      0: 0,
+      auto: "auto",
+      2: "2",
+      "1/2": "50%",
+      "1/20": "5%"
+    },
     extend: {
       screens: {
         light: { raw: "(prefers-color-scheme: light)" },
@@ -14,10 +21,10 @@ module.exports = {
         "bounce-slow": "bounce 5s infinite",
       },
       backgroundOpacity: {
-        "95": "0.95",
+        95: "0.95",
       },
       scale: {
-        "98": ".98",
+        98: ".98",
       },
     },
   },

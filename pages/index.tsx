@@ -32,6 +32,7 @@ interface Props {
 const Index: React.FunctionComponent<Props> = ({ data0, year }) => {
   const { isAuthenticated, userLoggedIn } = useContext(AssignContext);
   const [isModalLogin, setIsModalLogin] = useState<boolean>(false);
+  const [isModalGotIt, setIsModalGotIt] = useState<boolean>(false);
   const [balance, setBalance] = useState<string>("");
 
   useEffect(() => {
@@ -64,9 +65,6 @@ const Index: React.FunctionComponent<Props> = ({ data0, year }) => {
                 <div className="text-6xl mt-5 ml-5 animate-bounce-slow md:inline font-mono font-semibold">
                   ${balance}
                 </div>
-                <button className="border py-1 px-3 mb-5 rounded-md ml-5 bg-gradient-to-r from-teal-600 to-blue-500 font-semibold hover:text-green-200 hover:bg-blue-500 hover:border-green-300 outline-none">
-                  Got it
-                </button>
               </div>
             </div>
           ) : (

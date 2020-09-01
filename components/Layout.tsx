@@ -62,7 +62,7 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
                   " text-green-400 light:text-green-800 transition duration-500 ease-in-out hover:text-green-200 md:ml-4"
                 }
               >
-                Hi, {userLoggedIn[0]}
+                Hi, {userLoggedIn.username}
               </a>
             </Link>
           </div>
@@ -108,7 +108,7 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
               Logout
             </a>
           </div>
-          {userLoggedIn[0] === "mac" ? (
+          {userLoggedIn.username === "mac" ? (
             <Link href="/admin">
               <a
                 className={

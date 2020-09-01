@@ -10,7 +10,7 @@ import jwtDecode from "jwt-decode";
 function MyApp({ Component, pageProps }) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(false);
-  const [userLoggedIn, setUserLoggedIn] = useState<Array<string>>([]);
+  const [userLoggedIn, setUserLoggedIn] = useState<object>({});
 
   useEffect(() => {
     Axios.post(
@@ -25,13 +25,13 @@ function MyApp({ Component, pageProps }) {
       .then((resp) => {
         if (resp.data.message === "pass") setIsAuthenticated(true);
         setIsLoading(false);
-        setUserLoggedIn([
-          jwtDecode(
+        setUserLoggedIn({
+          username: jwtDecode(
             localStorage.getItem("auth").split("Bearer ").join("")
           ).email.split("@")[0],
-          jwtDecode(localStorage.getItem("auth").split("Bearer ").join(""))
+          id: jwtDecode(localStorage.getItem("auth").split("Bearer ").join(""))
             .user_id,
-        ]);
+        });
         console.log(
           jwtDecode(localStorage.getItem("auth").split("Bearer ").join(""))
         );
