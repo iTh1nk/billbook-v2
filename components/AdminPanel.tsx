@@ -4,7 +4,7 @@ import {
   faTools,
   faMinus,
   faEdit,
-  faPlus,
+  faUserPlus,
 } from "@fortawesome/free-solid-svg-icons";
 import { faReact } from "@fortawesome/free-brands-svg-icons";
 
@@ -42,25 +42,7 @@ const AdminPanel: React.FunctionComponent<Props> = ({ children, cbTab }) => {
                       "h-5 w-5 mx-auto hover:text-green-500  cursor-pointer"
                     }
                   >
-                    <FontAwesomeIcon icon={faPlus} />
-                  </div>
-                </span>
-              </div>
-              <div className="inline-block mb-5 ml-6 md:ml-0">
-                <span>
-                  <div
-                    onClick={() => {
-                      cbTab("delete");
-                      setIsActive("delete");
-                    }}
-                    className={
-                      (isActive === "delete"
-                        ? " text-green-500 "
-                        : " text-gray-300 ") +
-                      "h-5 w-5 mx-auto hover:text-green-500 cursor-pointer"
-                    }
-                  >
-                    <FontAwesomeIcon icon={faMinus} />
+                    <FontAwesomeIcon icon={faUserPlus} />
                   </div>
                 </span>
               </div>
@@ -107,25 +89,7 @@ const AdminPanel: React.FunctionComponent<Props> = ({ children, cbTab }) => {
                         "h-5 w-5 mx-auto hover:text-green-500  cursor-pointer"
                       }
                     >
-                      <FontAwesomeIcon icon={faPlus} />
-                    </div>
-                  </span>
-                </li>
-                <li className="mb-6">
-                  <span>
-                    <div
-                      onClick={() => {
-                        cbTab("delete");
-                        setIsActive("delete");
-                      }}
-                      className={
-                        (isActive === "delete"
-                          ? " text-green-500 "
-                          : " text-gray-300 ") +
-                        "h-5 w-5 mx-auto hover:text-green-500 cursor-pointer"
-                      }
-                    >
-                      <FontAwesomeIcon icon={faMinus} />
+                      <FontAwesomeIcon icon={faUserPlus} />
                     </div>
                   </span>
                 </li>

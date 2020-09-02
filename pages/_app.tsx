@@ -6,6 +6,7 @@ import { AssignContext } from "../components/AssignContext";
 import { IsLoadingSkeleton } from "../components/IsLoadingSkeleton";
 import IsLoading from "../components/IsLoading";
 import jwtDecode from "jwt-decode";
+import "toasted-notes/src/styles.css";
 
 function MyApp({ Component, pageProps }) {
   const [isLoading, setIsLoading] = useState<boolean>(true);
