@@ -130,7 +130,6 @@ const User: React.FunctionComponent<Props> = ({}) => {
 
   const handleSelectOnChange = (user) => {
     setSelectedUser(user);
-    console.log(user);
   };
 
   const handleDelete = (id) => {
@@ -526,23 +525,25 @@ const User: React.FunctionComponent<Props> = ({}) => {
                       gender: state.gender || selectedUser.profile.gender,
                     },
                   };
-                  console.log(dataToSubmit);
-                  // Axios.post(
-                  //   process.env.NEXT_PUBLIC_API + "auth/signup/",
-                  //   dataToSubmit,
-                  //   { headers: { authorization: localStorage.getItem("auth") } }
-                  // )
-                  //   .then((resp) => {
-                  //     setSubmitting(false);
-                  //     console.log("Posted!");
-                  //     resetForm();
-                  //     toasterNotes(true, 5000);
-                  //   })
-                  //   .catch((err) => {
-                  //     setSubmitting(false);
-                  //     toasterNotes(false, 5000);
-                  //     console.log(err, err.response);
-                  //   });
+                  Axios.put(
+                    process.env.NEXT_PUBLIC_API +
+                      "auth/put/" +
+                      selectedUser.value +
+                      "/",
+                    dataToSubmit,
+                    { headers: { authorization: localStorage.getItem("auth") } }
+                  )
+                    .then((resp) => {
+                      setSubmitting(false);
+                      console.log("Posted!");
+                      setSelectedUser(undefined);
+                      toasterNotes(true, 5000);
+                    })
+                    .catch((err) => {
+                      setSubmitting(false);
+                      toasterNotes(false, 5000);
+                      console.log(err, err.response);
+                    });
                 }}
               >
                 {({
