@@ -19,6 +19,20 @@ import toasterNotes from "../../components/ToasterNotes";
 
 interface Props {}
 
+type SelectedUser = {
+  value: string;
+  label: string;
+  profile: {
+    username: string;
+    password: string;
+    first_name: string;
+    last_name: string;
+    phone_number: number;
+    age: number;
+    gender: string;
+  };
+};
+
 type Values = {
   username: string;
   password: string;
@@ -36,6 +50,11 @@ type AdminUserState = {
   success: string;
   email: string;
   password: string;
+  first_name: string;
+  last_name: string;
+  phone_number: number;
+  age: number;
+  gender: string;
 };
 
 const initialState: AdminUserState = {
@@ -45,6 +64,11 @@ const initialState: AdminUserState = {
   success: "",
   email: "",
   password: "",
+  first_name: "",
+  last_name: "",
+  phone_number: 1000000000,
+  age: 0,
+  gender: "",
 };
 
 type AdminUserAction =
@@ -72,19 +96,19 @@ function adminUserReducer(state: AdminUserState, action: AdminUserAction) {
         ...state,
         success: "Successfully Completed!",
         isLoading: false,
+        email: "",
+        password: "",
+        first_name: "",
+        last_name: "",
+        age: 0,
+        phone_number: null,
+        gender: "",
       };
     case "error":
       return {
         ...state,
         error: action.payload,
         isLoading: false,
-        email: "",
-        password: "",
-        firstName: "",
-        lastName: "",
-        age: 0,
-        phoneNumber: null,
-        gender: "",
       };
     case "field":
       return {
@@ -98,11 +122,29 @@ const User: React.FunctionComponent<Props> = ({}) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { userLoggedIn } = useContext(AssignContext);
   const [state, dispatch] = useReducer(adminUserReducer, initialState);
-  const [selectedUser, setSelectedUser] = useState([]);
+  const [selectedUser, setSelectedUser] = useState<SelectedUser>();
   const [userOptions, setUserOptions] = useState([]);
+  const [delConfirm, setDelConfirm] = useState<boolean>(false);
 
-  const handleSelectOnChange = (selectedUser) => {
-    setSelectedUser(selectedUser);
+  const [test, setTest] = useState<string>("");
+
+  const handleSelectOnChange = (user) => {
+    setSelectedUser(user);
+    console.log(user);
+  };
+
+  const handleDelete = (id) => {
+    Axios.delete(process.env.NEXT_PUBLIC_API + "auth/delete/" + id + "/", {
+      headers: { authorization: localStorage.getItem("auth") },
+    })
+      .then((resp) => {
+        toasterNotes(true, 5000);
+        setSelectedUser(undefined);
+      })
+      .catch((err) => {
+        toasterNotes(false, 5000);
+        console.log(err, err.response);
+      });
   };
 
   const fetcher = async () => {
@@ -119,7 +161,9 @@ const User: React.FunctionComponent<Props> = ({}) => {
     );
     return result;
   };
-  const { data, error } = useSWR("/auth/get/", fetcher);
+  const { data, error } = useSWR("/auth/get/", fetcher, {
+    refreshInterval: 1000,
+  });
 
   if (error) return <IsError />;
   if (!data) return <IsLoading />;
@@ -391,11 +435,11 @@ const User: React.FunctionComponent<Props> = ({}) => {
                   </div>
                   <div>
                     <div>
-                      <div className="py-3 sm:flex sm:flex-row-reverse">
-                        <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto sm:ml-3 mb-5 md:mb-0">
+                      <div className="py-3 md:flex md:flex-row-reverse">
+                        <span className="mt-3 flex w-full rounded-md shadow-sm md:mt-0 md:w-auto md:ml-3 mb-5 md:mb-0">
                           <button
                             type="button"
-                            className="inline-flex justify-center w-full rounded-md border border-gray-700 px-4 py-2 bg-gray-600 text-base leading-6 font-medium text-gray-900 shadow-sm transition duration-500 ease-in-out hover:text-white focus:outline-none focus:border-gray-400 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                            className="inline-flex justify-center w-full rounded-md border border-gray-700 px-4 py-2 bg-gray-600 text-base leading-6 font-medium text-gray-900 shadow-sm hover:text-white focus:outline-none focus:border-gray-400 focus:shadow-outline-blue transition ease-in-out duration-300 md:text-sm md:leading-5"
                             onClick={handleReset}
                           >
                             Reset
@@ -405,12 +449,12 @@ const User: React.FunctionComponent<Props> = ({}) => {
                             />
                           </button>
                         </span>
-                        <span className="flex w-full rounded-md shadow-sm sm:w-auto">
+                        <span className="flex w-full rounded-md shadow-sm md:w-auto">
                           <button
                             type="submit"
                             className={
                               (isSubmitting ? " opacity-50 " : "") +
-                              "inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm transition duration-500 ease-in-out hover:bg-green-400 focus:outline-none focus:border-gray-400 focus:shadow-outline-orange transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                              "inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-400 focus:outline-none focus:border-gray-400 focus:shadow-outline-orange transition ease-in-out duration-300 md:text-sm md:leading-5"
                             }
                             disabled={isSubmitting}
                           >
@@ -449,7 +493,7 @@ const User: React.FunctionComponent<Props> = ({}) => {
             </div>
             <div
               className={
-                (selectedUser.length === 0 ? " hidden " : " inline-block ") +
+                (selectedUser === undefined ? " hidden " : " inline-block ") +
                 " mt-8 w-full"
               }
             >
@@ -463,72 +507,42 @@ const User: React.FunctionComponent<Props> = ({}) => {
                   age: 0,
                   gender: "",
                 }}
-                validationSchema={Yup.object().shape({
-                  username: Yup.string()
-                    .min(3, "Username is too short")
-                    .matches(
-                      /(?:[a-z0-9!#$%&'*+/=?^_`{|}~-]+(?:\.[a-z0-9!#$%&'*+/=?^_`{|}~-]+)*|"(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21\x23-\x5b\x5d-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])*")@(?:(?:[a-z0-9](?:[a-z0-9-]*[a-z0-9])?\.)+[a-z0-9](?:[a-z0-9-]*[a-z0-9])?|\[(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?|[a-z0-9-]*[a-z0-9]:(?:[\x01-\x08\x0b\x0c\x0e-\x1f\x21-\x5a\x53-\x7f]|\\[\x01-\x09\x0b\x0c\x0e-\x7f])+)\])/,
-                      "Email address is not valid"
-                    )
-                    .required("Username is required"),
-                  password: Yup.string()
-                    .min(5, "Password is too short")
-                    .max(50, "Password is too long")
-                    .required("Password is required"),
-                  firstName: Yup.string()
-                    .min(3, "First name is too short")
-                    .max(10, "First name is too long")
-                    .required("First name is required"),
-                  lastName: Yup.string()
-                    .min(3, "Last name is too short")
-                    .max(10, "Last name is too long")
-                    .required("Last name is required"),
-                  phoneNumber: Yup.number()
-                    .test(
-                      "length",
-                      "Phone number has to be 10 digits",
-                      (val) => val > 1000000000
-                    )
-                    .integer("Phone number contains 10 digits")
-                    .positive("Phone number has to be positive")
-                    .required("Phone number is required"),
-                  age: Yup.number()
-                    .min(18, "Your age has to be over 18")
-                    .required("Age is required"),
-                  gender: Yup.string().required("Please choose an option"),
-                })}
                 onSubmit={(
                   values: Values,
                   { setSubmitting, resetForm }: FormikHelpers<Values>
                 ) => {
+                  setSubmitting(false);
                   let dataToSubmit = {
-                    email: values.username,
-                    password: values.password,
+                    email: state.email || selectedUser.label,
+                    password: null,
                     profile: {
-                      first_name: values.firstName,
-                      last_name: values.lastName,
-                      phone_number: values.phoneNumber,
-                      age: values.age,
-                      gender: values.gender,
+                      first_name:
+                        state.first_name || selectedUser.profile.first_name,
+                      last_name:
+                        state.last_name || selectedUser.profile.last_name,
+                      phone_number:
+                        state.phone_number || selectedUser.profile.phone_number,
+                      age: state.age || selectedUser.profile.age,
+                      gender: state.gender || selectedUser.profile.gender,
                     },
                   };
                   console.log(dataToSubmit);
-                  Axios.post(
-                    process.env.NEXT_PUBLIC_API + "auth/signup/",
-                    dataToSubmit,
-                    { headers: { authorization: localStorage.getItem("auth") } }
-                  )
-                    .then((resp) => {
-                      setSubmitting(false);
-                      console.log("Posted!");
-                      resetForm();
-                      toasterNotes(true, 5000);
-                    })
-                    .catch((err) => {
-                      setSubmitting(false);
-                      toasterNotes(false, 5000);
-                      console.log(err, err.response);
-                    });
+                  // Axios.post(
+                  //   process.env.NEXT_PUBLIC_API + "auth/signup/",
+                  //   dataToSubmit,
+                  //   { headers: { authorization: localStorage.getItem("auth") } }
+                  // )
+                  //   .then((resp) => {
+                  //     setSubmitting(false);
+                  //     console.log("Posted!");
+                  //     resetForm();
+                  //     toasterNotes(true, 5000);
+                  //   })
+                  //   .catch((err) => {
+                  //     setSubmitting(false);
+                  //     toasterNotes(false, 5000);
+                  //     console.log(err, err.response);
+                  //   });
                 }}
               >
                 {({
@@ -547,7 +561,7 @@ const User: React.FunctionComponent<Props> = ({}) => {
                       >
                         Username (Email)
                       </label>
-                      <Field
+                      <input
                         className={
                           (errors.username ? " border-red-500 rounded " : "") +
                           "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
@@ -555,6 +569,15 @@ const User: React.FunctionComponent<Props> = ({}) => {
                         name="username"
                         type="text"
                         placeholder="Username..."
+                        key={selectedUser?.value}
+                        defaultValue={selectedUser?.label}
+                        onChange={(e) =>
+                          dispatch({
+                            type: "field",
+                            fieldName: "email",
+                            payload: e.target.value,
+                          })
+                        }
                       />
                       <p className="text-red-500 text-xs italic">
                         {errors.username && touched.username ? (
@@ -569,14 +592,14 @@ const User: React.FunctionComponent<Props> = ({}) => {
                       >
                         Password
                       </label>
-                      <Field
+                      <input
                         className={
                           (errors.password ? " border-red-500 rounded " : "") +
                           "shadow appearance-none border w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                         }
+                        disabled={true}
                         name="password"
                         type="password"
-                        placeholder="Password..."
                       />
                       <p className="text-red-500 text-xs italic">
                         {errors.password && touched.password ? (
@@ -596,7 +619,7 @@ const User: React.FunctionComponent<Props> = ({}) => {
                         >
                           First Name
                         </label>
-                        <Field
+                        <input
                           className={
                             (errors.firstName
                               ? " border-red-500 rounded "
@@ -605,7 +628,16 @@ const User: React.FunctionComponent<Props> = ({}) => {
                           }
                           name="firstName"
                           type="text"
+                          key={selectedUser?.value}
+                          defaultValue={selectedUser?.profile?.first_name}
                           placeholder="First Name..."
+                          onChange={(e) =>
+                            dispatch({
+                              type: "field",
+                              fieldName: "first_name",
+                              payload: e.target.value,
+                            })
+                          }
                         />
                         <p className="text-red-500 text-xs italic">
                           {errors.firstName && touched.firstName ? (
@@ -620,7 +652,7 @@ const User: React.FunctionComponent<Props> = ({}) => {
                         >
                           Last Name
                         </label>
-                        <Field
+                        <input
                           className={
                             (errors.lastName
                               ? " border-red-500 rounded "
@@ -629,7 +661,16 @@ const User: React.FunctionComponent<Props> = ({}) => {
                           }
                           name="lastName"
                           type="text"
+                          key={selectedUser?.value}
+                          defaultValue={selectedUser?.profile?.last_name}
                           placeholder="Last Name..."
+                          onChange={(e) =>
+                            dispatch({
+                              type: "field",
+                              fieldName: "last_name",
+                              payload: e.target.value,
+                            })
+                          }
                         />
                         <p className="text-red-500 text-xs italic">
                           {errors.lastName && touched.lastName ? (
@@ -646,7 +687,7 @@ const User: React.FunctionComponent<Props> = ({}) => {
                         >
                           Phone Number
                         </label>
-                        <Field
+                        <input
                           className={
                             (errors.phoneNumber
                               ? " border-red-500 rounded "
@@ -656,6 +697,15 @@ const User: React.FunctionComponent<Props> = ({}) => {
                           name="phoneNumber"
                           type="text"
                           placeholder="Phone Number..."
+                          key={selectedUser?.value}
+                          defaultValue={selectedUser?.profile?.phone_number}
+                          onChange={(e) =>
+                            dispatch({
+                              type: "field",
+                              fieldName: "phone_number",
+                              payload: e.target.value,
+                            })
+                          }
                         />
                         <p className="text-red-500 text-xs italic">
                           {errors.phoneNumber && touched.phoneNumber ? (
@@ -670,7 +720,7 @@ const User: React.FunctionComponent<Props> = ({}) => {
                         >
                           Age
                         </label>
-                        <Field
+                        <input
                           className={
                             (errors.age ? " border-red-500 rounded " : "") +
                             "shadow appearance-none border w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
@@ -678,6 +728,15 @@ const User: React.FunctionComponent<Props> = ({}) => {
                           name="age"
                           type="text"
                           placeholder="Age..."
+                          key={selectedUser?.value}
+                          defaultValue={selectedUser?.profile?.age}
+                          onChange={(e) =>
+                            dispatch({
+                              type: "field",
+                              fieldName: "age",
+                              payload: e.target.value,
+                            })
+                          }
                         />
                         <p className="text-red-500 text-xs italic">
                           {errors.age && touched.age ? (
@@ -692,18 +751,26 @@ const User: React.FunctionComponent<Props> = ({}) => {
                         >
                           Gender
                         </label>
-                        <Field
+                        <select
                           className={
                             (errors.gender ? " border-red-500 rounded " : "") +
                             "shadow appearance-none border w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                           }
-                          component="select"
+                          key={selectedUser?.value}
+                          defaultValue={selectedUser?.profile?.gender}
                           name="gender"
+                          onChange={(e) =>
+                            dispatch({
+                              type: "field",
+                              fieldName: "gender",
+                              payload: e.target.value,
+                            })
+                          }
                         >
                           <option value="">Please choose</option>
                           <option value="M">Male</option>
                           <option value="F">Female</option>
-                        </Field>
+                        </select>
                         <p className="text-red-500 text-xs italic">
                           {errors.gender && touched.gender ? (
                             <span>{errors.gender}</span>
@@ -713,26 +780,13 @@ const User: React.FunctionComponent<Props> = ({}) => {
                     </div>
                     <div>
                       <div>
-                        <div className="py-3 sm:flex sm:flex-row-reverse">
-                          <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto sm:ml-3 mb-5 md:mb-0">
-                            <button
-                              type="button"
-                              className="inline-flex justify-center w-full rounded-md border border-gray-700 px-4 py-2 bg-red-600 text-base leading-6 font-medium text-gray-300 shadow-sm hover:bg-red-400 hover:text-white focus:outline-none focus:border-gray-400 focus:shadow-outline-blue transition ease-in-out duration-300 sm:text-sm sm:leading-5"
-                              onClick={handleReset}
-                            >
-                              Delete
-                              <FontAwesomeIcon
-                                className="ml-1 mt-1 h-3"
-                                icon={faTrashAlt}
-                              />
-                            </button>
-                          </span>
-                          <span className="flex w-full rounded-md shadow-sm sm:w-auto">
+                        <div className="py-3 md:flex md:flex-row-reverse">
+                          <span className="flex w-full rounded-md shadow-sm md:w-auto">
                             <button
                               type="submit"
                               className={
                                 (isSubmitting ? " opacity-50 " : "") +
-                                "inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-400 focus:outline-none focus:border-gray-400 focus:shadow-outline-orange transition ease-in-out duration-300 sm:text-sm sm:leading-5"
+                                "inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-400 focus:outline-none focus:border-gray-400 focus:shadow-outline-orange transition ease-in-out duration-300 md:text-sm md:leading-5"
                               }
                               disabled={isSubmitting}
                             >
@@ -746,6 +800,48 @@ const User: React.FunctionComponent<Props> = ({}) => {
                               >
                                 <FontAwesomeIcon icon={faCircleNotch} />
                               </div>
+                            </button>
+                          </span>
+                          <span className="mt-3 flex w-full rounded-md shadow-sm md:mt-0 md:w-auto md:mr-3 mb-5 md:mb-0">
+                            <button
+                              type="button"
+                              className={
+                                (delConfirm
+                                  ? " bg-yellow-600 hover:bg-yellow-600 "
+                                  : " bg-red-600 hover:bg-red-400 ") +
+                                "inline-flex justify-center w-full rounded-md border border-gray-700 px-4 py-2 text-base leading-6 font-medium text-gray-300 shadow-sm hover:text-white focus:outline-none focus:border-gray-400 focus:shadow-outline-blue transition ease-in-out duration-300 md:text-sm md:leading-5"
+                              }
+                            >
+                              <span
+                                onClick={() => {
+                                  setDelConfirm(true);
+                                  setTimeout(() => {
+                                    setDelConfirm(false);
+                                  }, 3000);
+                                }}
+                                className={
+                                  delConfirm ? " hidden " : " inline-block "
+                                }
+                              >
+                                Delete
+                                <FontAwesomeIcon
+                                  className="ml-1 mt-1 h-3"
+                                  icon={faTrashAlt}
+                                />
+                              </span>
+                              <span
+                                onClick={() => {
+                                  handleDelete(selectedUser.value);
+                                  setDelConfirm(false);
+                                }}
+                                className={
+                                  delConfirm
+                                    ? " inline-block animate-pulse"
+                                    : " hidden "
+                                }
+                              >
+                                Confirm ?
+                              </span>
                             </button>
                           </span>
                         </div>

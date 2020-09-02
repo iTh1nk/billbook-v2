@@ -1,7 +1,9 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useContext } from "react";
 import { Layout } from "./Layout";
 import { Container } from "./Container";
 import Link from "next/link";
+import Axios from "axios";
+import { AssignContext } from "./AssignContext";
 
 interface Props {
   children: React.ReactNode;
@@ -12,6 +14,27 @@ const Admin: React.FunctionComponent<Props> = ({ children }) => {
   const currentTab = window.location.href
     .split("http://localhost:3000/admin/")
     .join("");
+  const { isAuthenticated } = useContext(AssignContext);
+
+  useEffect(() => {
+    Axios.post(
+      process.env.NEXT_PUBLIC_API + "auth/check/",
+      {},
+      {
+        headers: {
+          Authorization: localStorage.getItem("auth"),
+        },
+      }
+    )
+      .then((resp) => {
+        if (resp.data.message === "pass") setIsLoading(false);
+      })
+      .catch((err) => {
+        setIsLoading(false);
+        window.location.replace("/");
+        console.log(err, err.response);
+      });
+  }, [isAuthenticated]);
 
   return (
     <div>
