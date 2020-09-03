@@ -10,6 +10,7 @@ type CycleStatements = {
   updateAt: string;
   user: string;
   cycle: number;
+  username: number;
 };
 type Data = {
   id: number;
@@ -43,7 +44,7 @@ const Details: React.FunctionComponent<Props> = ({ detail }) => {
             <tbody>
               {detail.cycle_statements?.map((item, idx) => (
                 <tr key={item.id} className="hover:bg-gray-900">
-                  <td className="py-5">8731</td>
+                  <td className="py-5">{item.username}</td>
                   <td className="py-5">${item.balance}</td>
                   <td className="py-5">{item.notes}</td>
                 </tr>
@@ -57,16 +58,26 @@ const Details: React.FunctionComponent<Props> = ({ detail }) => {
 };
 
 export async function getStaticPaths() {
-  const res = await fetch("http://localhost:3000/api/cycles/get");
-  const details = await res.json();
-  const paths = details.data.map((item) => `/details/${item.id}`);
-  return { paths, fallback: false };
+  try {
+    const res = await fetch("http://localhost:3000/api/cycles/get");
+    const details = await res.json();
+    const paths = details.data.map((item) => `/details/${item.id}`);
+    return { paths, fallback: false };
+  } catch {
+    return { message: "Something went wrong!" };
+  }
 }
 
 export async function getStaticProps({ params }) {
-  const res = await fetch(`http://localhost:3000/api/cycles/${params.cycleId}`);
-  const detail = await res.json();
-  return { props: { detail } };
+  try {
+    const res = await fetch(
+      `http://localhost:3000/api/cycles/${params.cycleId}`
+    );
+    const detail = await res.json();
+    return { props: { detail } };
+  } catch {
+    return { message: "Something went wrong!" };
+  }
 }
 
 export default Details;

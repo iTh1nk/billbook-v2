@@ -130,7 +130,7 @@ export const LoginForm: React.FunctionComponent<LoginFormProps> = (props) => {
                     <span className="mt-3 flex w-full rounded-md shadow-sm sm:mt-0 sm:w-auto sm:ml-3 mb-5 md:mb-0">
                       <button
                         type="button"
-                        className="inline-flex justify-center w-full rounded-md border border-gray-700 px-4 py-2 bg-gray-600 text-base leading-6 font-medium text-gray-900 shadow-sm transition duration-500 ease-in-out hover:text-white focus:outline-none focus:border-gray-400 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                        className="inline-flex justify-center w-full rounded-md border border-gray-700 px-4 py-2 bg-gray-600 text-base leading-6 font-medium text-gray-900 shadow-sm transition duration-500 ease-in-out hover:text-white focus:outline-none focus:border-gray-400 focus:shadow-outline-blue sm:text-sm sm:leading-5"
                         onClick={handleReset}
                       >
                         Reset
@@ -145,7 +145,7 @@ export const LoginForm: React.FunctionComponent<LoginFormProps> = (props) => {
                         type="submit"
                         className={
                           (isSubmitting ? " opacity-50 " : "") +
-                          "inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm transition duration-500 ease-in-out hover:bg-green-400 focus:outline-none focus:border-gray-400 focus:shadow-outline-orange transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                          "inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm transition duration-500 ease-in-out hover:bg-green-400 focus:outline-none focus:border-gray-400 focus:shadow-outline-orange sm:text-sm sm:leading-5"
                         }
                         disabled={isSubmitting}
                       >

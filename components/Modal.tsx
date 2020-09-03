@@ -51,7 +51,7 @@ export const Modal: React.FunctionComponent<ModalProps> = (props) => {
                 <button
                   onClick={props.cbIsModal}
                   type="button"
-                  className="inline-flex justify-center w-full rounded-md border border-gray-700 px-4 py-2 bg-gray-600 text-base leading-6 font-medium text-gray-900 shadow-sm transition duration-500 ease-in-out hover:text-white focus:outline-none focus:border-orange-300 focus:shadow-outline-blue transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                  className="inline-flex justify-center w-full rounded-md border border-gray-700 px-4 py-2 bg-gray-600 text-base leading-6 font-medium text-gray-900 shadow-sm transition duration-500 ease-in-out hover:text-white focus:outline-none focus:border-orange-300 focus:shadow-outline-blue sm:text-sm sm:leading-5"
                 >
                   Cancel
                 </button>
@@ -61,7 +61,7 @@ export const Modal: React.FunctionComponent<ModalProps> = (props) => {
               <span className="flex w-full rounded-md shadow-sm sm:w-auto">
                 <button
                   type="button"
-                  className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm transition duration-500 ease-in-out  hover:bg-orange-500 focus:outline-none focus:border-orange-300 focus:shadow-outline-orange transition ease-in-out duration-150 sm:text-sm sm:leading-5"
+                  className="inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm transition duration-500 ease-in-out  hover:bg-orange-500 focus:outline-none focus:border-orange-300 focus:shadow-outline-orange sm:text-sm sm:leading-5"
                 >
                   Confirm
                 </button>

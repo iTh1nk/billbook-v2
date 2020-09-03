@@ -1,4 +1,4 @@
-import React, { useState, useReducer } from "react";
+import React, { useState, useReducer, useContext } from "react";
 import Admin from "../../components/Admin";
 import AdminPanel from "../../components/AdminPanel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -10,11 +10,13 @@ import IsError from "../../components/IsError";
 import IsLoading from "../../components/IsLoading";
 import toasterNotes from "../../components/ToasterNotes";
 import DatePicker from "react-datepicker";
+import moment from "moment";
+import { AssignContext } from "../../components/AssignContext";
 
 interface Props {}
 
 type Values = {
-  date: string;
+  // date: string;
   amount: string;
   totalBalance: string;
 };
@@ -59,8 +61,13 @@ function adminActivitiesReducer(
 }
 
 const Activity: React.FunctionComponent<Props> = ({}) => {
+  const { userLoggedIn } = useContext(AssignContext);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [state, dispatch] = useReducer(adminActivitiesReducer, initialState);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const handleChangeDatePicker = (date) => {
+    setSelectedDate(date);
+  };
 
   return (
     <div>
@@ -75,31 +82,26 @@ const Activity: React.FunctionComponent<Props> = ({}) => {
             </div>
             <Formik
               initialValues={{
-                date: "",
                 amount: "",
                 totalBalance: "",
               }}
               validationSchema={Yup.object().shape({
-                date: Yup.string()
-                  .min(3, "Username is too short")
-                  .required("Username is required"),
                 amount: Yup.string()
-                  .min(5, "Password is too short")
-                  .max(50, "Password is too long")
-                  .required("Password is required"),
+                  .max(10, "Amount is too long")
+                  .required("Amount is required"),
                 totalBalance: Yup.string()
-                  .min(3, "First name is too short")
-                  .max(10, "First name is too long")
-                  .required("First name is required"),
+                  .max(10, "Total balance is too long")
+                  .required("Total balance is required"),
               })}
               onSubmit={(
                 values: Values,
                 { setSubmitting, resetForm }: FormikHelpers<Values>
               ) => {
                 let dataToSubmit = {
-                  date: values.date,
+                  date: moment(selectedDate).format("YYYY-MM-DD"),
                   amount: values.amount,
                   totalBalance: values.totalBalance,
+                  user: userLoggedIn.id
                 };
                 console.log(dataToSubmit);
                 Axios.post(
@@ -134,24 +136,16 @@ const Activity: React.FunctionComponent<Props> = ({}) => {
                       className="block uppercase text-gray-300 text-sm font-bold mb-2"
                       htmlFor="username"
                     >
-                      Date
+                      Pick Date
                     </label>
-                    <Field
-                      className={
-                        (errors.date ? " border-red-500 rounded " : "") +
-                        "shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                      }
-                      name="date"
-                      type="text"
-                      placeholder="Date..."
+                    <DatePicker
+                      className="text-gray-800 rounded-sm py-2 px-3 leading-tight"
+                      selected={selectedDate}
+                      onChange={handleChangeDatePicker}
+                      dateFormat="yyyy-MM-dd"
                     />
-                    <p className="text-red-500 text-xs italic">
-                      {errors.date && touched.date ? (
-                        <span>{errors.date}</span>
-                      ) : null}
-                    </p>
                   </div>
-                  <div className="mb-6">
+                  <div className="mb-2">
                     <label
                       className="block uppercase text-gray-300 text-sm font-bold mb-2"
                       htmlFor="password"

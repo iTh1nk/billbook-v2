@@ -97,6 +97,7 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
             onClick={() => {
               setIsAuthenticated(false);
               localStorage.removeItem("auth");
+              window.location.replace("/");
             }}
           >
             <a
