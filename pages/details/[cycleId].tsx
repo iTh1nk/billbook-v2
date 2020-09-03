@@ -57,27 +57,27 @@ const Details: React.FunctionComponent<Props> = ({ detail }) => {
   );
 };
 
-export async function getStaticPaths() {
-  try {
-    const res = await fetch("http://localhost:3000/api/cycles/get");
-    const details = await res.json();
-    const paths = details.data.map((item) => `/details/${item.id}`);
-    return { paths, fallback: false };
-  } catch {
-    return { message: "Something went wrong!" };
-  }
-}
+// export async function getStaticPaths() {
+//   try {
+//     const res = await fetch("http://localhost:3000/api/cycles/get");
+//     const details = await res.json();
+//     const paths = details.data.map((item) => `/details/${item.id}`);
+//     return { paths, fallback: false };
+//   } catch {
+//     return { message: "Something went wrong!" };
+//   }
+// }
 
-export async function getStaticProps({ params }) {
-  try {
-    const res = await fetch(
-      `http://localhost:3000/api/cycles/${params.cycleId}`
-    );
-    const detail = await res.json();
-    return { props: { detail } };
-  } catch {
-    return { message: "Something went wrong!" };
-  }
-}
+// export async function getStaticProps({ params }) {
+//   try {
+//     const res = await fetch(
+//       `http://localhost:3000/api/cycles/${params.cycleId}`
+//     );
+//     const detail = await res.json();
+//     return { props: { detail } };
+//   } catch {
+//     return { message: "Something went wrong!" };
+//   }
+// }
 
 export default Details;

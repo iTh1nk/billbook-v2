@@ -106,26 +106,26 @@ const Index: React.FunctionComponent<Props> = ({ data0, year }) => {
   );
 };
 
-export async function getStaticProps() {
-  try {
-    const res = await fetch("http://localhost:3000/api/cycles/get/");
-    const data = await res.json();
-    const data0 = data.data;
-    const year = data.year;
-    return {
-      props: {
-        data0,
-        year,
-      },
-    };
-  } catch (err) {
-    console.log(err);
-    return {
-      props: {
-        data: null,
-      },
-    };
-  }
-}
+// export async function getStaticProps() {
+//   try {
+//     const res = await fetch("http://localhost:3000/api/cycles/get/");
+//     const data = await res.json();
+//     const data0 = data.data;
+//     const year = data.year;
+//     return {
+//       props: {
+//         data0,
+//         year,
+//       },
+//     };
+//   } catch (err) {
+//     console.log(err);
+//     return {
+//       props: {
+//         data: null,
+//       },
+//     };
+//   }
+// }
 
 export default Index;
