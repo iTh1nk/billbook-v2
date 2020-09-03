@@ -140,13 +140,13 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
         </nav>
       </header>
 
-      <Welcome
+      {/* <Welcome
         isModal={isModalWelcome}
         cb={(e) => {
           setIsModalWelcome(!isModalWelcome);
           localStorage.setItem("welcomeDismiss", "yes");
         }}
-      />
+      /> */}
       <Rnotes
         isModal={isModalNotes}
         cb={(e) => setIsModalNotes(!isModalNotes)}
