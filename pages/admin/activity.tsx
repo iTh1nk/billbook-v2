@@ -13,6 +13,7 @@ import DatePicker from "react-datepicker";
 import moment from "moment";
 import { AssignContext } from "../../components/AssignContext";
 import useLoggedIn from "../../components/hooks/useLoggedIn";
+import useSWR from "swr";
 
 interface Props {}
 
@@ -33,7 +34,7 @@ type AdminActivitiesState = {
 };
 
 const initialState: AdminActivitiesState = {
-  tab: "post",
+  tab: "home",
   isLoading: false,
   error: "",
   success: "",
@@ -70,12 +71,61 @@ const Activity: React.FunctionComponent<Props> = ({}) => {
     setSelectedDate(date);
   };
 
+  const fetcher = async () => {
+    const res = await fetch(process.env.NEXT_PUBLIC_API + "activities/get/", {
+      headers: { authorization: localStorage.getItem("auth") },
+    });
+    const data = await res.json();
+    return data;
+  };
+  const { data, error } = useSWR("/activities/get/", fetcher);
+  if (error) return <IsError />;
+  if (!data) return <IsLoading />;
+
   return (
     <div>
       <Admin>
         <AdminPanel
           cbTab={(tabName) => dispatch({ type: "tab", tabName: tabName })}
         >
+          {/* START - HOME */}
+          <div className={state.tab === "home" ? "inline" : "hidden"}>
+            {data.map((item, idx) => (
+              <div key={item.id}>
+              <div className=" mt-5">
+                {idx + 1}.{" "}
+                <span className="underline font-bold">{item.date}</span>
+              </div>
+                <ul className="list-disc ml-6">
+                  <li>
+                    <span className="text-gray-500">Amount:</span> ${item.amount}
+                  </li>
+                  <li>
+                    <span className="text-gray-500">Total Balance:</span>{" "}
+                    ${item.totalBalance}
+                  </li>
+                  <li>
+                    <span className="text-gray-500">is_read:</span>{" "}
+                    {item.is_read}
+                  </li>
+                  <li>
+                    <span className="text-gray-500">User:</span>{" "}
+                    {item.user}
+                  </li>
+                  <li>
+                    <span className="text-gray-500">Created:</span>{" "}
+                    {item.createdAt}
+                  </li>
+                  <li>
+                    <span className="text-gray-500">Updated:</span>{" "}
+                    {item.updatedAt}
+                  </li>
+                </ul>
+              </div>
+            ))}
+          </div>
+          {/* END - HOME */}
+
           {/* START - POST */}
           <div className={state.tab === "post" ? "inline" : "hidden"}>
             <div className="mb-5 font-mono font-bold uppercase text-lg italic">
@@ -102,7 +152,7 @@ const Activity: React.FunctionComponent<Props> = ({}) => {
                   date: moment(selectedDate).format("YYYY-MM-DD"),
                   amount: values.amount,
                   totalBalance: values.totalBalance,
-                  user: userLoggedIn.id
+                  user: userLoggedIn.id,
                 };
                 console.log(dataToSubmit);
                 Axios.post(

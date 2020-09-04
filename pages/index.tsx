@@ -36,22 +36,6 @@ const Index: React.FunctionComponent<Props> = ({ data, yearArr }) => {
   const [balance, setBalance] = useState<string>("");
   const { isAuthenticated } = useLoggedIn(null);
 
-  // useEffect(() => {
-  //   Axios.get(
-  //     process.env.NEXT_PUBLIC_API + "auth/get/" + userLoggedIn.id + "/",
-  //     {
-  //       headers: { Authorization: localStorage.getItem("auth") },
-  //     }
-  //   )
-  //     .then((resp) => {
-  //       setBalance(resp.data.user_activities[0].totalBalance);
-  //       console.log(resp.data);
-  //     })
-  //     .catch((err) => {
-  //       console.log(err, err.response);
-  //     });
-  // }, [userLoggedIn]);
-
   return (
     <>
       <Layout title="Bill Book" showLogin={isModalLogin}>

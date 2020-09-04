@@ -21,7 +21,6 @@ const useLoggedIn = (trigger?, loading?) => {
     username: "",
   });
   useEffect(() => {
-    console.log("useLoggedIn Hook: ", true);
     Axios.post(
       process.env.NEXT_PUBLIC_API + "auth/check/",
       {},

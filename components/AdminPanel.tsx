@@ -23,8 +23,11 @@ const AdminPanel: React.FunctionComponent<Props> = ({ children, cbTab }) => {
         <nav className="bg-gray-900 md:w-20 flex-row justify-start md:justify-between flex md:flex-col md:h-screen">
           <div className="md:mt-10 md:mb-10 mt-5 mb-3">
             <FontAwesomeIcon
+              onClick={() => {
+                cbTab("home");
+              }}
               icon={faReact}
-              className="rounded-full w-10 h-10 md:mb-12 animate-spin-slow mx-auto inline-block md:block ml-6 md:ml-3"
+              className="rounded-full w-10 h-10 md:mb-12 animate-spin-slow mx-auto inline-block md:block ml-6 md:ml-3 cursor-pointer"
             />
             {/* Small Screen Layout */}
             <div className=" md:hidden inline">
@@ -143,7 +146,7 @@ const AdminPanel: React.FunctionComponent<Props> = ({ children, cbTab }) => {
               </a>
             </div> */}
         </nav>
-        <div className="px-6 md:px-12 py-5 md:py-8 bg-gray-800 h-screen md:w-screen mb-10 ">
+        <div className="px-6 md:px-12 py-5 md:py-8 bg-gray-800 h-screen md:w-screen mb-10 overflow-scroll">
           {children}
         </div>
       </div>
