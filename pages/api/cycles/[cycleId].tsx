@@ -24,12 +24,10 @@ type Data = {
 };
 
 export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
-  console.log(req);
   const {
     query: { cycleId },
   } = req;
   let resp = await fetch(process.env.NEXT_PUBLIC_API + `cycles/get/${cycleId}`);
   let data = await resp.json();
-  console.log(data);
   res.status(200).json(data);
 };

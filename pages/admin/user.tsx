@@ -16,6 +16,7 @@ import { AssignContext } from "../../components/AssignContext";
 import IsError from "../../components/IsError";
 import IsLoading from "../../components/IsLoading";
 import toasterNotes from "../../components/ToasterNotes";
+import useLoggedIn from "../../components/hooks/useLoggedIn";
 
 interface Props {}
 
@@ -120,7 +121,7 @@ function adminUserReducer(state: AdminUserState, action: AdminUserAction) {
 
 const User: React.FunctionComponent<Props> = ({}) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const { userLoggedIn } = useContext(AssignContext);
+  const { userLoggedIn } = useLoggedIn(null);
   const [state, dispatch] = useReducer(adminUserReducer, initialState);
   const [selectedUser, setSelectedUser] = useState<SelectedUser>();
   const [userOptions, setUserOptions] = useState([]);

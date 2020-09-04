@@ -5,8 +5,11 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faBars, faTimes } from "@fortawesome/free-solid-svg-icons";
 import { LoginForm } from "./LoginForm";
 import { Rnotes } from "./Rnotes";
-import { Welcome } from "./Welcom";
+import { Welcome } from "./Welcome";
 import { AssignContext } from "./AssignContext";
+import Axios from "axios";
+import IsLoading from "./IsLoading";
+import useLoggedIn from "./hooks/useLoggedIn";
 
 interface LayoutProps {
   title?: string;
@@ -23,9 +26,8 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
   const [isModalNotes, setIsModalNotes] = useState<boolean>(false);
   const [isModalLogin, setIsModalLogin] = useState<boolean>(false);
   const [isModalWelcome, setIsModalWelcome] = useState<boolean>(true);
-  const { isAuthenticated, setIsAuthenticated, userLoggedIn } = useContext(
-    AssignContext
-  );
+  const { isAuthenticated, userLoggedIn, isLoading } = useLoggedIn(null);
+  const [logoutLoading, setLogoutLoading] = useState<boolean>(false);
 
   const chkFirstTime = useRef(true);
   useEffect(() => {
@@ -34,6 +36,8 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
     if (!chkFirstTime.current) setIsModalLogin(!isModalLogin);
     if (chkFirstTime.current) chkFirstTime.current = false;
   }, [showLogin]);
+
+  if (isLoading || logoutLoading) return <IsLoading />;
 
   return (
     <div className="flex flex-col h-screen justify-between">
@@ -95,7 +99,8 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
         <nav className={(isExpand ? "" : " hidden ") + "md:flex"}>
           <div
             onClick={() => {
-              setIsAuthenticated(false);
+              // setIsAuthenticated(false);
+              setLogoutLoading(true);
               localStorage.removeItem("auth");
               window.location.replace("/");
             }}

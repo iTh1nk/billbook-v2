@@ -29,10 +29,9 @@ export default async (req: NextApiRequest, res: NextApiResponse<Data>) => {
     let resp = await fetch(process.env.NEXT_PUBLIC_API + "cycles/get/");
     let data = await resp.json();
     let yearArr = [];
-    data.map((item) =>
-      yearArr.push(moment(item.date, "YYYY-MM-DD").format("YYYY"))
-    );
+    data.map((item) => yearArr.push(item.date.subString(0, 4)));
     yearArr = Array.from(new Set(yearArr));
+    console.log(yearArr);
     res.status(200).json({ data: data, year: yearArr });
   } catch {
     res

@@ -4,6 +4,7 @@ import { Container } from "./Container";
 import Link from "next/link";
 import Axios from "axios";
 import { AssignContext } from "./AssignContext";
+import useLoggedIn from "./hooks/useLoggedIn";
 
 interface Props {
   children: React.ReactNode;
@@ -11,12 +12,13 @@ interface Props {
 
 const Admin: React.FunctionComponent<Props> = ({ children }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const currentTab = window.location.href
-    .split("http://localhost:3000/admin/")
-    .join("");
-  const { isAuthenticated } = useContext(AssignContext);
+  const [currentTab, setCurrentTab] = useState<string>("");
+  const { isAuthenticated } = useLoggedIn(null, false);
 
   useEffect(() => {
+    setCurrentTab(
+      window.location.href.split("http://localhost:3000/admin/").join("")
+    );
     Axios.post(
       process.env.NEXT_PUBLIC_API + "auth/check/",
       {},

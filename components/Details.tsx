@@ -5,6 +5,8 @@ import { faCheck } from "@fortawesome/free-solid-svg-icons";
 import Link from "next/link";
 import moment from "moment";
 import { AssignContext } from "./AssignContext";
+import useLoggedIn from "./hooks/useLoggedIn";
+import Axios from "axios";
 
 type CycleStatements = {
   id: number;
@@ -32,14 +34,23 @@ const Details: React.FunctionComponent<Props> = ({ data0, year, cbLogin }) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [cycleRead, setCycleRead] = useState<string>();
   const [isExpand, setIsExpand] = useState<boolean>(true);
-  const { isAuthenticated } = useContext(AssignContext);
+  const { isAuthenticated, userLoggedIn } = useLoggedIn(null);
 
   useEffect(() => {
     setCycleRead(localStorage.getItem("cycleRead"));
   });
 
-  const markCycleRead = (cycle) => {
+  const markCycleRead = (cycle, id) => {
     localStorage.setItem("cycleRead", cycleRead + "," + cycle);
+    Axios.put(
+      process.env.NEXT_PUBLIC_API + "cycles/put/isread/" + id + "/",
+      { is_read: userLoggedIn.username + "," },
+      { headers: { authorization: localStorage.getItem("auth") } }
+    )
+      .then((resp) => {})
+      .catch((err) => {
+        console.log(err, err.response);
+      });
   };
   const chkCycleRead = (cycle) => {
     let spArr = localStorage.getItem("cycleRead")?.split(",");
@@ -62,13 +73,13 @@ const Details: React.FunctionComponent<Props> = ({ data0, year, cbLogin }) => {
         }
       >
         {data0.map((item, idx) =>
-          moment(item.date, "YYYY-MM-DD").format("YYYY") === year ? (
+          item.date.substring(0, 4) === year ? (
             <div key={item.id} className="inline relative m-1">
               {isAuthenticated ? (
                 <Link href={`/details/[cycleId]`} as={`/details/${item.id}`}>
                   <a>
                     <button
-                      onClick={() => markCycleRead(item.date)}
+                      onClick={() => markCycleRead(item.date, item.id)}
                       className="px-3 outline-none font-semibold m-2 bg-gray-300 text-gray-800 rounded-md shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1"
                     >
                       <span className="px-1">

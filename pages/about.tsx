@@ -1,12 +1,10 @@
 import React from "react";
-import { Layout } from "../components/Layout";
 import Link from "next/link";
-import { Container } from "../components/Container";
 
 const About: React.FunctionComponent = () => {
   return (
-    <Layout title="About">
-      <Container>
+    <div>
+      <div className="md:p-10 p-5">
         <div className="md:flex md:justify-center text-center">
           <div className="inline-block m-3 md:m-5 bg-gray-200 rounded-full md:w-32 md:h-32 w-12 h-12">
             <img
@@ -47,8 +45,9 @@ const About: React.FunctionComponent = () => {
         <div className="font-mono text-left mt-5 md:mt-10 px-2 md:px-32">
           <div className="mb-5 text-center">[...]</div>
           <li className="py-2">
-            By the power of React library, NEXT.js partner with SWR handles very well
-            on tasks like pre-render, pre-fetch, server side rendering, etc.
+            By the power of React library, NEXT.js partner with SWR handles very
+            well on tasks like pre-render, pre-fetch, server side rendering,
+            etc.
           </li>
           <li className="py-2">
             <span className="italic">`getStaticProps`</span>,{" "}
@@ -73,8 +72,15 @@ const About: React.FunctionComponent = () => {
             custom designs.
           </li>
         </div>
-      </Container>
-    </Layout>
+      </div>
+      <footer className="flex justify-center items-center text-white light:text-black h-16">
+        <Link href="/">
+          <a className="text-xs transition duration-500 ease-in-out hover:text-orange-500 underline">
+            Go Back
+          </a>
+        </Link>
+      </footer>
+    </div>
   );
 };
 export default About;

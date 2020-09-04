@@ -16,7 +16,7 @@ type UserActivities = {
   updatedAt: string;
 };
 
-const Profile: React.FunctionComponent<Props> = ({}) => {
+const Profile = ({}) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const { userLoggedIn } = useContext(AssignContext);
   const [userActivities, setUserActivities] = useState<Array<UserActivities>>(
@@ -88,6 +88,13 @@ const Profile: React.FunctionComponent<Props> = ({}) => {
       </Layout>
     </div>
   );
+};
+
+export const getStaticProps = async (context) => {
+  console.log(context);
+  const res = await fetch(process.env.NEXT_PUBLIC_API + "auth/get/");
+  const data = await res.json();
+  return { props: { data } };
 };
 
 export default Profile;

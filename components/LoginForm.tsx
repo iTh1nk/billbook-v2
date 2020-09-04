@@ -7,6 +7,7 @@ import { Modal } from "./Modal";
 import Axios from "axios";
 import { useRouter } from "next/router";
 import { AssignContext } from "./AssignContext";
+import useLoggedIn from "./hooks/useLoggedIn";
 
 interface Values {
   username: string;
@@ -19,7 +20,7 @@ interface LoginFormProps {
 
 export const LoginForm: React.FunctionComponent<LoginFormProps> = (props) => {
   const router = useRouter();
-  const { isAuthenticated, setIsAuthenticated } = useContext(AssignContext);
+  const [isTrigger, setIsTrigger] = useState<any>();
 
   return (
     <Modal
@@ -60,10 +61,10 @@ export const LoginForm: React.FunctionComponent<LoginFormProps> = (props) => {
               dataToSubmit
             )
               .then((resp) => {
-                setSubmitting(false);
+                // setSubmitting(false);
                 localStorage.setItem("auth", resp.data.token);
-                setIsAuthenticated(true);
-                props.cb();
+                // props.cb();
+                window.location.reload();
               })
               .catch((err) => {
                 setSubmitting(false);

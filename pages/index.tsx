@@ -7,6 +7,7 @@ import moment from "moment";
 import { AssignContext } from "../components/AssignContext";
 import { LoginForm } from "../components/LoginForm";
 import Axios from "axios";
+import useLoggedIn from "../components/hooks/useLoggedIn";
 
 type CycleStatements = {
   id: number;
@@ -25,31 +26,31 @@ type DetailsData = {
   id: number;
 };
 interface Props {
-  data0: Array<DetailsData>;
-  year: Array<string>;
+  data: Array<DetailsData>;
+  yearArr: Array<string>;
 }
 
-const Index: React.FunctionComponent<Props> = ({ data0, year }) => {
-  const { isAuthenticated, userLoggedIn } = useContext(AssignContext);
+const Index: React.FunctionComponent<Props> = ({ data, yearArr }) => {
   const [isModalLogin, setIsModalLogin] = useState<boolean>(false);
   const [isModalGotIt, setIsModalGotIt] = useState<boolean>(false);
   const [balance, setBalance] = useState<string>("");
+  const { isAuthenticated } = useLoggedIn(null);
 
-  useEffect(() => {
-    Axios.get(
-      process.env.NEXT_PUBLIC_API + "auth/get/" + userLoggedIn[1] + "/",
-      {
-        headers: { Authorization: localStorage.getItem("auth") },
-      }
-    )
-      .then((resp) => {
-        setBalance(resp.data.user_activities[0].totalBalance);
-        console.log(resp.data);
-      })
-      .catch((err) => {
-        console.log(err, err.response);
-      });
-  }, [userLoggedIn]);
+  // useEffect(() => {
+  //   Axios.get(
+  //     process.env.NEXT_PUBLIC_API + "auth/get/" + userLoggedIn.id + "/",
+  //     {
+  //       headers: { Authorization: localStorage.getItem("auth") },
+  //     }
+  //   )
+  //     .then((resp) => {
+  //       setBalance(resp.data.user_activities[0].totalBalance);
+  //       console.log(resp.data);
+  //     })
+  //     .catch((err) => {
+  //       console.log(err, err.response);
+  //     });
+  // }, [userLoggedIn]);
 
   return (
     <>
@@ -60,7 +61,7 @@ const Index: React.FunctionComponent<Props> = ({ data0, year }) => {
             <div className="flex justify-center">
               <div className="z-0 w-full bg-gradient-to-r from-teal-600 to-blue-500 p-4 rounded-lg flex flex-wrap justify-start items-end transition duration-300 ease-in-out transform hover:scale-98">
                 <div className="py-5 md:inline font-semibold">
-                  Balance as of cycle:{" "}
+                  Balance as of cycle:
                 </div>
                 <div className="text-6xl mt-5 ml-5 animate-bounce-slow md:inline font-mono font-semibold">
                   ${balance}
@@ -85,12 +86,12 @@ const Index: React.FunctionComponent<Props> = ({ data0, year }) => {
           {/* End - Main section: balance */}
 
           {/* Start - Monthly Details Btn */}
-          {!!year ? (
-            year.map((item, idx) => (
+          {!!yearArr ? (
+            yearArr.map((item, idx) => (
               <Details
                 key={idx}
                 year={item}
-                data0={data0}
+                data0={data}
                 cbLogin={() => setIsModalLogin(!isModalLogin)}
               />
             ))
@@ -106,26 +107,28 @@ const Index: React.FunctionComponent<Props> = ({ data0, year }) => {
   );
 };
 
-// export async function getStaticProps() {
-//   try {
-//     const res = await fetch("http://localhost:3000/api/cycles/get/");
-//     const data = await res.json();
-//     const data0 = data.data;
-//     const year = data.year;
-//     return {
-//       props: {
-//         data0,
-//         year,
-//       },
-//     };
-//   } catch (err) {
-//     console.log(err);
-//     return {
-//       props: {
-//         data: null,
-//       },
-//     };
-//   }
-// }
+export async function getStaticProps() {
+  try {
+    const res = await fetch(process.env.NEXT_PUBLIC_API + "cycles/get/");
+    const data = await res.json();
+    let yearArr = [];
+    data.map((item) => yearArr.push(item.date.substring(0, 4)));
+    yearArr = Array.from(new Set(yearArr));
+    console.log(yearArr);
+    return {
+      props: {
+        data,
+        yearArr,
+      },
+    };
+  } catch (err) {
+    console.log(err);
+    return {
+      props: {
+        data: null,
+      },
+    };
+  }
+}
 
 export default Index;

@@ -12,6 +12,7 @@ import toasterNotes from "../../components/ToasterNotes";
 import DatePicker from "react-datepicker";
 import moment from "moment";
 import { AssignContext } from "../../components/AssignContext";
+import useLoggedIn from "../../components/hooks/useLoggedIn";
 
 interface Props {}
 
@@ -61,7 +62,7 @@ function adminActivitiesReducer(
 }
 
 const Activity: React.FunctionComponent<Props> = ({}) => {
-  const { userLoggedIn } = useContext(AssignContext);
+  const { userLoggedIn } = useLoggedIn(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [state, dispatch] = useReducer(adminActivitiesReducer, initialState);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
