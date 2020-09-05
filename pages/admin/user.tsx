@@ -176,52 +176,58 @@ const User: React.FunctionComponent<Props> = ({}) => {
         >
           {/* START - HOME */}
           <div className={state.tab === "home" ? "inline" : "hidden"}>
-            {data.map((item, idx) => (
-              <div key={item.id}>
-                <div className=" mt-5">
-                  {idx + 1}.{" "}
-                  <span className="underline font-bold">{item.email}</span>
+            {data === [] ? (
+              data.map((item, idx) => (
+                <div key={item.id}>
+                  <div className=" mt-5">
+                    {idx + 1}.{" "}
+                    <span className="underline font-bold">{item.email}</span>
+                  </div>
+                  <ul className="list-disc ml-6">
+                    <li>
+                      <span className="text-gray-500">First Name:</span>
+                      {item.profile?.first_name}
+                    </li>
+                    <li>
+                      <span className="text-gray-500">Last name:</span>
+                      {item.profile?.last_name}
+                    </li>
+                    <li>
+                      <span className="text-gray-500">Phone Number:</span>{" "}
+                      {item.profile?.phone_number}
+                    </li>
+                    <li>
+                      <span className="text-gray-500">Age:</span>{" "}
+                      {item.profile?.age}
+                    </li>
+                    <li>
+                      <span className="text-gray-500">Gender:</span>{" "}
+                      {item.profile?.gender}
+                    </li>
+                    <li>
+                      <span className="text-gray-500">Last login:</span>{" "}
+                      {item.last_login}
+                    </li>
+                    <li>
+                      <span className="text-gray-500">is_active:</span>{" "}
+                      {item.is_active.toString()}
+                    </li>
+                    <li>
+                      <span className="text-gray-500">is_staff:</span>{" "}
+                      {item.is_staff.toString()}
+                    </li>
+                    <li>
+                      <span className="text-gray-500">is_superuser:</span>{" "}
+                      {item.is_superuser.toString()}
+                    </li>
+                  </ul>
                 </div>
-                <ul className="list-disc ml-6">
-                  <li>
-                    <span className="text-gray-500">First Name:</span>
-                    {item.profile?.first_name}
-                  </li>
-                  <li>
-                    <span className="text-gray-500">Last name:</span>
-                    {item.profile?.last_name}
-                  </li>
-                  <li>
-                    <span className="text-gray-500">Phone Number:</span>{" "}
-                    {item.profile?.phone_number}
-                  </li>
-                  <li>
-                    <span className="text-gray-500">Age:</span>{" "}
-                    {item.profile?.age}
-                  </li>
-                  <li>
-                    <span className="text-gray-500">Gender:</span>{" "}
-                    {item.profile?.gender}
-                  </li>
-                  <li>
-                    <span className="text-gray-500">Last login:</span>{" "}
-                    {item.last_login}
-                  </li>
-                  <li>
-                    <span className="text-gray-500">is_active:</span>{" "}
-                    {item.is_active.toString()}
-                  </li>
-                  <li>
-                    <span className="text-gray-500">is_staff:</span>{" "}
-                    {item.is_staff.toString()}
-                  </li>
-                  <li>
-                    <span className="text-gray-500">is_superuser:</span>{" "}
-                    {item.is_superuser.toString()}
-                  </li>
-                </ul>
+              ))
+            ) : (
+              <div className="font-mono text-lg animate-pulse">
+                No data has been recorded yet...
               </div>
-            ))}
+            )}
           </div>
           {/* END - HOME */}
 

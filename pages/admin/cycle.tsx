@@ -2,7 +2,11 @@ import React, { useState, useReducer, useContext } from "react";
 import Admin from "../../components/admin/Admin";
 import AdminPanel from "../../components/admin/AdminPanel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUndo, faCircleNotch, faTrashAlt } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUndo,
+  faCircleNotch,
+  faTrashAlt,
+} from "@fortawesome/free-solid-svg-icons";
 import { Formik, Field, Form, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import Axios from "axios";
@@ -92,10 +96,9 @@ const Cycle: React.FunctionComponent<Props> = ({}) => {
   };
 
   const handleDelete = (id) => {
-    Axios.delete(
-      process.env.NEXT_PUBLIC_API + "cycle/delete/" + id + "/",
-      { headers: { authorization: localStorage.getItem("auth") } }
-    )
+    Axios.delete(process.env.NEXT_PUBLIC_API + "cycle/delete/" + id + "/", {
+      headers: { authorization: localStorage.getItem("auth") },
+    })
       .then((resp) => {
         toasterNotes("success", 5000);
       })
@@ -126,35 +129,41 @@ const Cycle: React.FunctionComponent<Props> = ({}) => {
         >
           {/* START - HOME */}
           <div className={state.tab === "home" ? "inline" : "hidden"}>
-            {data.map((item, idx) => (
-              <div key={item.id}>
-                <div className=" mt-5">
-                  {idx + 1}.{" "}
-                  <span className="underline font-bold">{item.date}</span>
-                  <FontAwesomeIcon
-                    onClick={() => {
-                      handleDelete(item.id);
-                    }}
-                    className="ml-2 text-red-500 cursor-pointer"
-                    icon={faTrashAlt}
-                  />
+            {data === [] ? (
+              data.map((item, idx) => (
+                <div key={item.id}>
+                  <div className=" mt-5">
+                    {idx + 1}.{" "}
+                    <span className="underline font-bold">{item.date}</span>
+                    <FontAwesomeIcon
+                      onClick={() => {
+                        handleDelete(item.id);
+                      }}
+                      className="ml-2 text-red-500 cursor-pointer"
+                      icon={faTrashAlt}
+                    />
+                  </div>
+                  <ul className="list-disc ml-6">
+                    <li>
+                      <span className="text-gray-500">is_read:</span>{" "}
+                      {item.is_read}
+                    </li>
+                    <li>
+                      <span className="text-gray-500">Created:</span>{" "}
+                      {item.createdAt}
+                    </li>
+                    <li>
+                      <span className="text-gray-500">Updated:</span>{" "}
+                      {item.updatedAt}
+                    </li>
+                  </ul>
                 </div>
-                <ul className="list-disc ml-6">
-                  <li>
-                    <span className="text-gray-500">is_read:</span>{" "}
-                    {item.is_read}
-                  </li>
-                  <li>
-                    <span className="text-gray-500">Created:</span>{" "}
-                    {item.createdAt}
-                  </li>
-                  <li>
-                    <span className="text-gray-500">Updated:</span>{" "}
-                    {item.updatedAt}
-                  </li>
-                </ul>
+              ))
+            ) : (
+              <div className="font-mono text-lg animate-pulse">
+                No data has been recorded yet...
               </div>
-            ))}
+            )}
           </div>
           {/* END - HOME */}
 

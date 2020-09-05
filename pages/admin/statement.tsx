@@ -204,40 +204,46 @@ const Statement: React.FunctionComponent<Props> = ({}) => {
         >
           {/* START - HOME */}
           <div className={state.tab === "home" ? "inline" : "hidden"}>
-            {data.map((item, idx) => (
-              <div key={item.id}>
-                <div className=" mt-5">
-                  {idx + 1}.{" "}
-                  <span className="underline font-bold">${item.balance}</span>
-                  <FontAwesomeIcon
-                    onClick={() => {
-                      handleDelete(item.id);
-                    }}
-                    className="ml-2 text-red-500 cursor-pointer"
-                    icon={faTrashAlt}
-                  />
+            {data === [] ? (
+              data.map((item, idx) => (
+                <div key={item.id}>
+                  <div className=" mt-5">
+                    {idx + 1}.{" "}
+                    <span className="underline font-bold">${item.balance}</span>
+                    <FontAwesomeIcon
+                      onClick={() => {
+                        handleDelete(item.id);
+                      }}
+                      className="ml-2 text-red-500 cursor-pointer"
+                      icon={faTrashAlt}
+                    />
+                  </div>
+                  <ul className="list-disc ml-6">
+                    <li>
+                      <span className="text-gray-500">Notes:</span> {item.notes}
+                    </li>
+                    <li>
+                      <span className="text-gray-500">User:</span> {item.user}
+                    </li>
+                    <li>
+                      <span className="text-gray-500">Cycle:</span> {item.cycle}
+                    </li>
+                    <li>
+                      <span className="text-gray-500">Created:</span>{" "}
+                      {item.createdAt}
+                    </li>
+                    <li>
+                      <span className="text-gray-500">Updated:</span>{" "}
+                      {item.updatedAt}
+                    </li>
+                  </ul>
                 </div>
-                <ul className="list-disc ml-6">
-                  <li>
-                    <span className="text-gray-500">Notes:</span> {item.notes}
-                  </li>
-                  <li>
-                    <span className="text-gray-500">User:</span> {item.user}
-                  </li>
-                  <li>
-                    <span className="text-gray-500">Cycle:</span> {item.cycle}
-                  </li>
-                  <li>
-                    <span className="text-gray-500">Created:</span>{" "}
-                    {item.createdAt}
-                  </li>
-                  <li>
-                    <span className="text-gray-500">Updated:</span>{" "}
-                    {item.updatedAt}
-                  </li>
-                </ul>
+              ))
+            ) : (
+              <div className="font-mono text-lg animate-pulse">
+                No data has been recorded yet...
               </div>
-            ))}
+            )}
           </div>
           {/* END - HOME */}
 

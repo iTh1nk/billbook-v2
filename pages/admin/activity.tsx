@@ -193,46 +193,52 @@ const Activity: React.FunctionComponent<Props> = ({}) => {
           {state.switchTab}
           {/* START - HOME */}
           <div className={state.tab === "home" ? "inline" : "hidden"}>
-            {dataActivities.map((item, idx) => (
-              <div key={item.id}>
-                <div className=" mt-5">
-                  {idx + 1}.{" "}
-                  <span className="underline font-bold">{item.date}</span>
-                  <FontAwesomeIcon
-                    onClick={() => {
-                      handleDelete(item.id);
-                    }}
-                    className="ml-2 text-red-500 cursor-pointer"
-                    icon={faTrashAlt}
-                  />
+            {dataActivities === [] ? (
+              dataActivities.map((item, idx) => (
+                <div key={item.id}>
+                  <div className=" mt-5">
+                    {idx + 1}.{" "}
+                    <span className="underline font-bold">{item.date}</span>
+                    <FontAwesomeIcon
+                      onClick={() => {
+                        handleDelete(item.id);
+                      }}
+                      className="ml-2 text-red-500 cursor-pointer"
+                      icon={faTrashAlt}
+                    />
+                  </div>
+                  <ul className="list-disc ml-6">
+                    <li>
+                      <span className="text-gray-500">Amount:</span> $
+                      {item.amount}
+                    </li>
+                    <li>
+                      <span className="text-gray-500">Total Balance:</span> $
+                      {item.totalBalance}
+                    </li>
+                    <li>
+                      <span className="text-gray-500">is_read:</span>{" "}
+                      {item.is_read}
+                    </li>
+                    <li>
+                      <span className="text-gray-500">User:</span> {item.user}
+                    </li>
+                    <li>
+                      <span className="text-gray-500">Created:</span>{" "}
+                      {item.createdAt}
+                    </li>
+                    <li>
+                      <span className="text-gray-500">Updated:</span>{" "}
+                      {item.updatedAt}
+                    </li>
+                  </ul>
                 </div>
-                <ul className="list-disc ml-6">
-                  <li>
-                    <span className="text-gray-500">Amount:</span> $
-                    {item.amount}
-                  </li>
-                  <li>
-                    <span className="text-gray-500">Total Balance:</span> $
-                    {item.totalBalance}
-                  </li>
-                  <li>
-                    <span className="text-gray-500">is_read:</span>{" "}
-                    {item.is_read}
-                  </li>
-                  <li>
-                    <span className="text-gray-500">User:</span> {item.user}
-                  </li>
-                  <li>
-                    <span className="text-gray-500">Created:</span>{" "}
-                    {item.createdAt}
-                  </li>
-                  <li>
-                    <span className="text-gray-500">Updated:</span>{" "}
-                    {item.updatedAt}
-                  </li>
-                </ul>
+              ))
+            ) : (
+              <div className="font-mono text-lg animate-pulse">
+                No data has been recorded yet...
               </div>
-            ))}
+            )}
           </div>
           {/* END - HOME */}
 
