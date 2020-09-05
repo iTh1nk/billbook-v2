@@ -5,6 +5,7 @@ import { AssignContext } from "../components/AssignContext";
 import useSWR from "swr";
 import IsLoading from "../components/IsLoading";
 import IsError from "../components/IsError";
+import useLoggedIn from "../components/hooks/useLoggedIn";
 
 interface Props {}
 type UserActivities = {
@@ -18,7 +19,7 @@ type UserActivities = {
 
 const Profile = ({}) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const { userLoggedIn } = useContext(AssignContext);
+  const { userLoggedIn } = useLoggedIn(null);
   const [userActivities, setUserActivities] = useState<Array<UserActivities>>(
     []
   );

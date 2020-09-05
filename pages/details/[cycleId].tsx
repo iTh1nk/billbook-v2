@@ -42,7 +42,7 @@ const Details: React.FunctionComponent<Props> = ({ detail }) => {
               </tr>
             </thead>
             <tbody>
-              {detail.cycle_statements?.map((item, idx) => (
+              {detail?.cycle_statements?.map((item, idx) => (
                 <tr key={item.id} className="hover:bg-gray-900">
                   <td className="py-5">{item.username}</td>
                   <td className="py-5">${item.balance}</td>
