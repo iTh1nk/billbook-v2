@@ -62,9 +62,9 @@ export async function getStaticPaths() {
     const res = await fetch(process.env.NEXT_PUBLIC_API + "cycles/get");
     const details = await res.json();
     const paths = details.map((item) => `/details/${item.id}`);
-    return { paths, fallback: false };
+    return { paths, fallback: true };
   } catch {
-    return { message: "Something went wrong!" };
+    return;
   }
 }
 
@@ -76,7 +76,7 @@ export async function getStaticProps(context) {
     const detail = await res.json();
     return { props: { detail } };
   } catch {
-    return { message: "Something went wrong!" };
+    return;
   }
 }
 
