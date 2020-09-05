@@ -8,7 +8,11 @@ import React, {
 import Admin from "../../components/admin/Admin";
 import AdminPanel from "../../components/admin/AdminPanel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUndo, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUndo,
+  faCircleNotch,
+  faTrashAlt,
+} from "@fortawesome/free-solid-svg-icons";
 import { Formik, Field, Form, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import Axios from "axios";
@@ -25,7 +29,6 @@ import Select from "react-select";
 interface Props {}
 
 type Values = {
-  // date: string;
   amount: string;
   totalBalance: string;
 };
@@ -42,6 +45,7 @@ type AdminActivitiesState = {
   selectedUser: SelectedUser;
   userOptions: Array<SelectedUser>;
   switchTab: JSX.Element;
+  selectedDateUpdate: Date;
 };
 
 const initialState: AdminActivitiesState = {
@@ -53,6 +57,7 @@ const initialState: AdminActivitiesState = {
   amount: "",
   totalBalance: "",
   selectedDate: new Date(),
+  selectedDateUpdate: new Date(),
   selectedUser: null,
   userOptions: [],
   switchTab: null,
@@ -64,6 +69,7 @@ type AdminActivitiesAction =
   | { type: "tab"; tabName: string }
   | { type: "field"; fieldName: string; payload: string }
   | { type: "chooseDate"; payload: string }
+  | { type: "chooseDateUpdate"; payload: string }
   | { type: "selectUser"; payload: SelectedUser }
   | { type: "userOptions"; payload: Array<SelectedUser> }
   | { type: "switchTab"; payload: string };
@@ -104,6 +110,11 @@ function adminActivitiesReducer(
         ...state,
         switchTab: action.payload === "loading" ? <IsLoading /> : <IsError />,
       };
+    case "chooseDateUpdate":
+      return {
+        ...state,
+        selectedDateUpdate: action.payload,
+      };
   }
 }
 type SelectedUser = {
@@ -118,8 +129,25 @@ const Activity: React.FunctionComponent<Props> = ({}) => {
   const handleChangeDatePicker = (date) => {
     dispatch({ type: "chooseDate", payload: date });
   };
+  const handleChangeDatePickerUpdate = (date) => {
+    dispatch({ type: "chooseDateUpdate", payload: date });
+  };
   const handleSelectOnChange = (user) => {
     dispatch({ type: "selectUser", payload: user });
+  };
+
+  const handleDelete = (id) => {
+    Axios.delete(
+      process.env.NEXT_PUBLIC_API + "activities/delete/" + id + "/",
+      { headers: { authorization: localStorage.getItem("auth") } }
+    )
+      .then((resp) => {
+        toasterNotes("success", 5000);
+      })
+      .catch((err) => {
+        console.log(err, err.response);
+        toasterNotes("error", 5000);
+      });
   };
 
   useEffect(() => {
@@ -170,6 +198,13 @@ const Activity: React.FunctionComponent<Props> = ({}) => {
                 <div className=" mt-5">
                   {idx + 1}.{" "}
                   <span className="underline font-bold">{item.date}</span>
+                  <FontAwesomeIcon
+                    onClick={() => {
+                      handleDelete(item.id);
+                    }}
+                    className="ml-2 text-red-500 cursor-pointer"
+                    icon={faTrashAlt}
+                  />
                 </div>
                 <ul className="list-disc ml-6">
                   <li>
@@ -375,7 +410,15 @@ const Activity: React.FunctionComponent<Props> = ({}) => {
 
           {/* START - UPDATE */}
           <div className={state.tab === "update" ? "inline" : "hidden"}>
-            UPDATE
+            <div className="mb-5 font-mono font-bold uppercase text-lg italic">
+              Make an update:
+            </div>
+            <DatePicker
+              className="text-gray-800 rounded-sm py-2 px-3 leading-tight"
+              selected={state.selectedDateUpdate}
+              onChange={handleChangeDatePickerUpdate}
+              dateFormat="yyyy-MM-dd"
+            />
           </div>
           {/* END - UPDATE */}
         </AdminPanel>

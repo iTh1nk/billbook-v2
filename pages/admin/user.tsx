@@ -529,23 +529,34 @@ const User: React.FunctionComponent<Props> = ({}) => {
           {/* END - POST */}
 
           {/* START - UPDATE */}
-          <div className={state.tab === "update" ? "inline" : "hidden"}>
+          <div className={state.tab === "update" ? " inline" : " hidden"}>
             <div className="mb-5 font-mono font-bold uppercase text-lg italic">
               Make an update:{" "}
             </div>
-            <div className="text-gray-600">
+            <div className="text-gray-600 md:flex md:justify-between">
               <Select
+                className="inline-block w-full"
                 placeholder="Select User..."
                 name="userEdit"
                 value={selectedUser}
                 options={userOptions}
                 onChange={handleSelectOnChange}
               />
+              <button
+                className="inline-block md:ml-5 text-gray-300 ease-in-out duration-300 bg-gray-600 rounded-lg p-2 hover:text-white hover:bg-gray-500 outline-none"
+                onClick={() => {
+                  setSelectedUser(null);
+                }}
+              >
+                Collapse
+              </button>
             </div>
             <div
               className={
-                (selectedUser === undefined ? " hidden " : " inline-block ") +
-                " mt-8 w-full"
+                (selectedUser === undefined || selectedUser === null
+                  ? " invisible opacity-0 duration-300 ease-in-out "
+                  : " visible opacity-100 duration-300 ease-in-out transform translate-y-5 ") +
+                " w-full"
               }
             >
               <Formik
@@ -588,7 +599,7 @@ const User: React.FunctionComponent<Props> = ({}) => {
                     .then((resp) => {
                       setSubmitting(false);
                       console.log("Posted!");
-                      setSelectedUser(undefined);
+                      undefined;
                       toasterNotes("success", 5000);
                     })
                     .catch((err) => {

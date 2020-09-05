@@ -2,7 +2,11 @@ import React, { useState, useReducer, useContext, useEffect } from "react";
 import Admin from "../../components/admin/Admin";
 import AdminPanel from "../../components/admin/AdminPanel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
-import { faUndo, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import {
+  faUndo,
+  faCircleNotch,
+  faTrashAlt,
+} from "@fortawesome/free-solid-svg-icons";
 import { Formik, Field, Form, FormikHelpers } from "formik";
 import * as Yup from "yup";
 import Axios from "axios";
@@ -132,6 +136,20 @@ const Statement: React.FunctionComponent<Props> = ({}) => {
     dispatch({ type: "selectCycle", payload: cycle });
   };
 
+  const handleDelete = (id) => {
+    Axios.delete(
+      process.env.NEXT_PUBLIC_API + "statements/delete/" + id + "/",
+      { headers: { authorization: localStorage.getItem("auth") } }
+    )
+      .then((resp) => {
+        toasterNotes("success", 5000);
+      })
+      .catch((err) => {
+        console.log(err, err.response);
+        toasterNotes("error", 5000);
+      });
+  };
+
   useEffect(() => {
     Axios.get(process.env.NEXT_PUBLIC_API + "auth/get/", {
       headers: { authorization: localStorage.getItem("auth") },
@@ -191,6 +209,13 @@ const Statement: React.FunctionComponent<Props> = ({}) => {
                 <div className=" mt-5">
                   {idx + 1}.{" "}
                   <span className="underline font-bold">${item.balance}</span>
+                  <FontAwesomeIcon
+                    onClick={() => {
+                      handleDelete(item.id);
+                    }}
+                    className="ml-2 text-red-500 cursor-pointer"
+                    icon={faTrashAlt}
+                  />
                 </div>
                 <ul className="list-disc ml-6">
                   <li>
