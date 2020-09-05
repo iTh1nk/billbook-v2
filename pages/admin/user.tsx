@@ -1,6 +1,6 @@
 import React, { useState, useReducer, useContext } from "react";
-import Admin from "../../components/Admin";
-import AdminPanel from "../../components/AdminPanel";
+import Admin from "../../components/admin/Admin";
+import AdminPanel from "../../components/admin/AdminPanel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
   faUndo,
@@ -138,11 +138,11 @@ const User: React.FunctionComponent<Props> = ({}) => {
       headers: { authorization: localStorage.getItem("auth") },
     })
       .then((resp) => {
-        toasterNotes(true, 5000);
+        toasterNotes("success", 5000);
         setSelectedUser(undefined);
       })
       .catch((err) => {
-        toasterNotes(false, 5000);
+        toasterNotes("error", 5000);
         console.log(err, err.response);
       });
   };
@@ -299,11 +299,11 @@ const User: React.FunctionComponent<Props> = ({}) => {
                     setSubmitting(false);
                     console.log("Posted!");
                     resetForm();
-                    toasterNotes(true, 5000);
+                    toasterNotes("success", 5000);
                   })
                   .catch((err) => {
                     setSubmitting(false);
-                    toasterNotes(false, 5000);
+                    toasterNotes("error", 5000);
                     console.log(err, err.response);
                   });
               }}
@@ -589,11 +589,11 @@ const User: React.FunctionComponent<Props> = ({}) => {
                       setSubmitting(false);
                       console.log("Posted!");
                       setSelectedUser(undefined);
-                      toasterNotes(true, 5000);
+                      toasterNotes("success", 5000);
                     })
                     .catch((err) => {
                       setSubmitting(false);
-                      toasterNotes(false, 5000);
+                      toasterNotes("error", 5000);
                       console.log(err, err.response);
                     });
                 }}

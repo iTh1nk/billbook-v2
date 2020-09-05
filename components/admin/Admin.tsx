@@ -1,10 +1,10 @@
 import React, { useState, useEffect, useContext } from "react";
-import { Layout } from "./Layout";
-import { Container } from "./Container";
+import { Layout } from "../Layout";
+import { Container } from "../Container";
 import Link from "next/link";
 import Axios from "axios";
-import { AssignContext } from "./AssignContext";
-import useLoggedIn from "./hooks/useLoggedIn";
+import { AssignContext } from "../AssignContext";
+import useLoggedIn from "../hooks/useLoggedIn";
 
 interface Props {
   children: React.ReactNode;
@@ -36,7 +36,7 @@ const Admin: React.FunctionComponent<Props> = ({ children }) => {
         window.location.replace("/");
         console.log(err, err.response);
       });
-  }, [isAuthenticated]);
+  });
 
   return (
     <div>

@@ -8,6 +8,7 @@ import { AssignContext } from "../components/AssignContext";
 import { LoginForm } from "../components/LoginForm";
 import Axios from "axios";
 import useLoggedIn from "../components/hooks/useLoggedIn";
+import useSWR from "swr";
 
 type CycleStatements = {
   id: number;
@@ -26,15 +27,34 @@ type DetailsData = {
   id: number;
 };
 interface Props {
-  data: Array<DetailsData>;
+  dataProps: Array<DetailsData>;
   yearArr: Array<string>;
+  balanceProps: string;
 }
 
-const Index: React.FunctionComponent<Props> = ({ data, yearArr }) => {
+const Index: React.FunctionComponent<Props> = ({
+  dataProps,
+  yearArr,
+  balanceProps,
+}) => {
   const [isModalLogin, setIsModalLogin] = useState<boolean>(false);
   const [isModalGotIt, setIsModalGotIt] = useState<boolean>(false);
   const [balance, setBalance] = useState<string>("");
-  const { isAuthenticated } = useLoggedIn(null);
+  const { isAuthenticated, userLoggedIn } = useLoggedIn(null);
+
+  const fetcher = async () => {
+    const res = await fetch(
+      process.env.NEXT_PUBLIC_API + "activities/get/user/" + userLoggedIn.id + "/",
+      { headers: { authorization: localStorage.getItem("auth") } }
+    );
+    const data = await res.json();
+    return data;
+  };
+  const { data, error } = useSWR(
+    "/activities/get/" + userLoggedIn.id + "/",
+    fetcher,
+    { initialData: balanceProps }
+  );
 
   return (
     <>
@@ -48,7 +68,7 @@ const Index: React.FunctionComponent<Props> = ({ data, yearArr }) => {
                   Balance as of cycle:
                 </div>
                 <div className="text-6xl mt-5 ml-5 animate-bounce-slow md:inline font-mono font-semibold">
-                  ${balance}
+                  ${data.totalBalance}
                 </div>
               </div>
             </div>
@@ -75,7 +95,7 @@ const Index: React.FunctionComponent<Props> = ({ data, yearArr }) => {
               <Details
                 key={idx}
                 year={item}
-                data0={data}
+                data0={dataProps}
                 cbLogin={() => setIsModalLogin(!isModalLogin)}
               />
             ))
@@ -94,15 +114,15 @@ const Index: React.FunctionComponent<Props> = ({ data, yearArr }) => {
 export async function getStaticProps() {
   try {
     const res = await fetch(process.env.NEXT_PUBLIC_API + "cycles/get/");
-    const data = await res.json();
+    const dataProps = await res.json();
     let yearArr = [];
-    data.map((item) => yearArr.push(item.date.substring(0, 4)));
+    dataProps.map((item) => yearArr.push(item.date.substring(0, 4)));
     yearArr = Array.from(new Set(yearArr));
-    console.log(yearArr);
     return {
       props: {
-        data,
+        dataProps,
         yearArr,
+        balance: "0",
       },
     };
   } catch (err) {

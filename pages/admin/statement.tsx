@@ -1,6 +1,6 @@
-import React, { useState, useReducer, useContext } from "react";
-import Admin from "../../components/Admin";
-import AdminPanel from "../../components/AdminPanel";
+import React, { useState, useReducer, useContext, useEffect } from "react";
+import Admin from "../../components/admin/Admin";
+import AdminPanel from "../../components/admin/AdminPanel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUndo, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { Formik, Field, Form, FormikHelpers } from "formik";
@@ -13,16 +13,21 @@ import DatePicker from "react-datepicker";
 import moment from "moment";
 import useLoggedIn from "../../components/hooks/useLoggedIn";
 import useSWR from "swr";
+import Select from "react-select";
 
 interface Props {}
 
 type Values = {
-  // date: string;
-  amount: string;
-  totalBalance: string;
+  balance: string;
+  notes: string;
 };
 
-type AdminActivitiesState = {
+type SelectedItem = {
+  value: string;
+  label: string;
+};
+
+type AdminStatementsState = {
   tab: string;
   isLoading: boolean;
   error: string;
@@ -30,9 +35,14 @@ type AdminActivitiesState = {
   date: string;
   amount: string;
   totalBalance: string;
+  selectedUser: SelectedItem;
+  selectedCycle: SelectedItem;
+  // selectedDate: Date;
+  userOptions: Array<SelectedItem>;
+  cycleOptions: Array<SelectedItem>;
 };
 
-const initialState: AdminActivitiesState = {
+const initialState: AdminStatementsState = {
   tab: "home",
   isLoading: false,
   error: "",
@@ -40,17 +50,27 @@ const initialState: AdminActivitiesState = {
   date: "",
   amount: "",
   totalBalance: "",
+  selectedUser: null,
+  selectedCycle: null,
+  // selectedDate: new Date(),
+  userOptions: [],
+  cycleOptions: [],
 };
 
-type AdminActivitiesAction =
-  | { type: "submitting" | "success" }
+type AdminStatementsAction =
+  | { type: "submitting" | "success" | "reset" }
   | { type: "error"; payload: string }
   | { type: "tab"; tabName: string }
-  | { type: "field"; fieldName: string; payload: string };
+  | { type: "field"; fieldName: string; payload: string }
+  | { type: "selectUser"; payload: SelectedItem }
+  | { type: "selectCycle"; payload: SelectedItem }
+  | { type: "selectDate"; payload: Date }
+  | { type: "userOptions"; payload: Array<SelectedItem> }
+  | { type: "cycleOptions"; payload: Array<SelectedItem> };
 
-function adminActivitiesReducer(
-  state: AdminActivitiesState,
-  action: AdminActivitiesAction
+function adminStatementsReducer(
+  state: AdminStatementsState,
+  action: AdminStatementsAction
 ) {
   switch (action.type) {
     case "tab":
@@ -58,16 +78,92 @@ function adminActivitiesReducer(
         ...state,
         tab: action.tabName,
       };
+    case "success":
+      return {
+        ...state,
+        selectedUser: null,
+        selectedCycle: null,
+        // selectedDate: new Date(),
+      };
+    // case "selectDate":
+    //   return {
+    //     ...state,
+    //     selectedDate: action.payload,
+    //   };
+    case "selectUser":
+      return {
+        ...state,
+        selectedUser: action.payload,
+      };
+    case "selectCycle":
+      return {
+        ...state,
+        selectedCycle: action.payload,
+      };
+    case "userOptions":
+      return {
+        ...state,
+        userOptions: action.payload,
+      };
+    case "cycleOptions":
+      return {
+        ...state,
+        cycleOptions: action.payload,
+      };
+    case "reset":
+      return {
+        ...state,
+        selectedUser: null,
+        selectedCycle: null,
+      };
   }
 }
 
 const Statement: React.FunctionComponent<Props> = ({}) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [state, dispatch] = useReducer(adminActivitiesReducer, initialState);
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const handleChangeDatePicker = (date) => {
-    setSelectedDate(date);
+  const [state, dispatch] = useReducer(adminStatementsReducer, initialState);
+  // const handleChangeDatePicker = (date) => {
+  //   dispatch({ type: "selectDate", payload: date });
+  // };
+  const handleSelectOnChangeUser = (user) => {
+    dispatch({ type: "selectUser", payload: user });
   };
+  const handleSelectOnChangeCycle = (cycle) => {
+    dispatch({ type: "selectCycle", payload: cycle });
+  };
+
+  useEffect(() => {
+    Axios.get(process.env.NEXT_PUBLIC_API + "auth/get/", {
+      headers: { authorization: localStorage.getItem("auth") },
+    })
+      .then((resp) => {
+        dispatch({
+          type: "userOptions",
+          payload: resp.data.map((item) => ({
+            value: item.id,
+            label: item.email,
+          })),
+        });
+      })
+      .catch((err) => {
+        console.log(err, err.response);
+      });
+    Axios.get(process.env.NEXT_PUBLIC_API + "cycles/get/", {
+      headers: { authorization: localStorage.getItem("auth") },
+    })
+      .then((resp) => {
+        dispatch({
+          type: "cycleOptions",
+          payload: resp.data.map((item) => ({
+            value: item.id,
+            label: item.date,
+          })),
+        });
+      })
+      .catch((err) => {
+        console.log(err, err.response);
+      });
+  }, []);
 
   const fetcher = async () => {
     const res = await fetch(process.env.NEXT_PUBLIC_API + "statements/get/", {
@@ -76,14 +172,18 @@ const Statement: React.FunctionComponent<Props> = ({}) => {
     const data = await res.json();
     return data;
   };
-  const { data, error } = useSWR("/activities/get/", fetcher);
+  const { data, error } = useSWR("/statements/get/", fetcher, {
+    refreshInterval: 1000,
+  });
   if (error) return <IsError />;
   if (!data) return <IsLoading />;
 
   return (
     <div>
       <Admin>
-        <AdminPanel>
+        <AdminPanel
+          cbTab={(tabName) => dispatch({ type: "tab", tabName: tabName })}
+        >
           {/* START - HOME */}
           <div className={state.tab === "home" ? "inline" : "hidden"}>
             {data.map((item, idx) => (
@@ -94,16 +194,13 @@ const Statement: React.FunctionComponent<Props> = ({}) => {
                 </div>
                 <ul className="list-disc ml-6">
                   <li>
-                    <span className="text-gray-500">Notes:</span>{" "}
-                    {item.notes}
+                    <span className="text-gray-500">Notes:</span> {item.notes}
                   </li>
                   <li>
-                    <span className="text-gray-500">User:</span>{" "}
-                    {item.user}
+                    <span className="text-gray-500">User:</span> {item.user}
                   </li>
                   <li>
-                    <span className="text-gray-500">Cycle:</span>{" "}
-                    {item.cycle}
+                    <span className="text-gray-500">Cycle:</span> {item.cycle}
                   </li>
                   <li>
                     <span className="text-gray-500">Created:</span>{" "}
@@ -111,7 +208,7 @@ const Statement: React.FunctionComponent<Props> = ({}) => {
                   </li>
                   <li>
                     <span className="text-gray-500">Updated:</span>{" "}
-                    {item.updateAt}
+                    {item.updatedAt}
                   </li>
                 </ul>
               </div>
@@ -126,41 +223,44 @@ const Statement: React.FunctionComponent<Props> = ({}) => {
             </div>
             <Formik
               initialValues={{
-                amount: "",
-                totalBalance: "",
+                balance: "",
+                notes: "",
               }}
               validationSchema={Yup.object().shape({
-                amount: Yup.string()
-                  .max(10, "Amount is too long")
-                  .required("Amount is required"),
-                totalBalance: Yup.string()
-                  .max(10, "Total balance is too long")
-                  .required("Total balance is required"),
+                balance: Yup.number()
+                  .typeError("Balance has to be integer")
+                  .max(1000, "Balance is too big")
+                  .required("Balance is required"),
+                notes: Yup.string().max(1000, "Notes is too long"),
               })}
               onSubmit={(
                 values: Values,
                 { setSubmitting, resetForm }: FormikHelpers<Values>
               ) => {
                 let dataToSubmit = {
-                  date: moment(selectedDate).format("YYYY-MM-DD"),
-                  amount: values.amount,
-                  totalBalance: values.totalBalance,
+                  // date: moment(state.selectedDate).format("YYYY-MM-DD"),
+                  balance: values.balance,
+                  notes: values.notes,
+                  user: state.selectedUser.value,
+                  cycle: state.selectedCycle.value,
+                  username: state.selectedUser.label,
                 };
                 console.log(dataToSubmit);
                 Axios.post(
-                  process.env.NEXT_PUBLIC_API + "activities/post/",
+                  process.env.NEXT_PUBLIC_API + "statements/post/",
                   dataToSubmit,
                   { headers: { authorization: localStorage.getItem("auth") } }
                 )
                   .then((resp) => {
                     setSubmitting(false);
                     console.log("Posted!");
+                    dispatch({ type: "success" });
                     resetForm();
-                    toasterNotes(true, 5000);
+                    toasterNotes("success", 5000);
                   })
                   .catch((err) => {
                     setSubmitting(false);
-                    toasterNotes(false, 5000);
+                    toasterNotes("error", 5000);
                     console.log(err, err.response);
                   });
               }}
@@ -174,7 +274,7 @@ const Statement: React.FunctionComponent<Props> = ({}) => {
                 handleReset,
               }) => (
                 <Form className="rounded pb-8 w-full mb-4">
-                  <div className="mb-4 w-full">
+                  {/* <div className="mb-4 w-full">
                     <label
                       className="block uppercase text-gray-300 text-sm font-bold mb-2"
                       htmlFor="username"
@@ -183,52 +283,69 @@ const Statement: React.FunctionComponent<Props> = ({}) => {
                     </label>
                     <DatePicker
                       className="text-gray-800 rounded-sm py-2 px-3 leading-tight"
-                      selected={selectedDate}
+                      selected={state.selectedDate}
                       onChange={handleChangeDatePicker}
                       dateFormat="yyyy-MM-dd"
                     />
+                  </div> */}
+                  <div className="text-gray-600 mb-4">
+                    <label className="block uppercase text-gray-300 text-sm font-bold mb-2">
+                      Select User
+                    </label>
+                    <Select
+                      placeholder="Select User..."
+                      value={state.selectedUser}
+                      options={state.userOptions}
+                      onChange={handleSelectOnChangeUser}
+                    />
+                  </div>
+                  <div className="text-gray-600 mb-4">
+                    <label className="block uppercase text-gray-300 text-sm font-bold mb-2">
+                      Select Cycle
+                    </label>
+                    <Select
+                      placeholder="Select Cycle..."
+                      value={state.selectedCycle}
+                      options={state.cycleOptions}
+                      onChange={handleSelectOnChangeCycle}
+                    />
                   </div>
                   <div className="mb-2">
-                    <label
-                      className="block uppercase text-gray-300 text-sm font-bold mb-2"
-                      htmlFor="password"
-                    >
-                      Amount
+                    <label className="block uppercase text-gray-300 text-sm font-bold mb-2">
+                      Balance
                     </label>
                     <Field
                       className={
-                        (errors.amount ? " border-red-500 rounded " : "") +
+                        (errors.balance ? " border-red-500 rounded " : "") +
                         "shadow appearance-none border w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                       }
-                      name="amount"
+                      name="balance"
                       type="text"
-                      placeholder="Amount..."
+                      placeholder="Balance..."
                     />
                     <p className="text-red-500 text-xs italic">
-                      {errors.amount && touched.amount ? (
-                        <span>{errors.amount}</span>
+                      {errors.balance && touched.balance ? (
+                        <span>{errors.balance}</span>
                       ) : null}
                     </p>
                   </div>
                   <div className="mb-6">
-                    <label
-                      className="block uppercase text-gray-300 text-sm font-bold mb-2"
-                      htmlFor="password"
-                    >
-                      Total Balance:
+                    <label className="block uppercase text-gray-300 text-sm font-bold mb-2">
+                      Notes
                     </label>
                     <Field
                       className={
-                        (errors.amount ? " border-red-500 rounded " : "") +
+                        (errors.notes ? " border-red-500 rounded " : "") +
                         "shadow appearance-none border w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                       }
-                      name="totalBalance"
+                      name="notes"
+                      component="textarea"
                       type="text"
-                      placeholder="Total balance..."
+                      placeholder="Notes..."
                     />
                     <p className="text-red-500 text-xs italic">
-                      {errors.amount && touched.amount ? (
-                        <span>{errors.amount}</span>
+                      {errors.notes && touched.notes ? (
+                        <span>{errors.notes}</span>
                       ) : null}
                     </p>
                   </div>
@@ -236,7 +353,10 @@ const Statement: React.FunctionComponent<Props> = ({}) => {
                   <div>
                     <div>
                       <div className="py-3 md:flex md:flex-row-reverse">
-                        <span className="mt-3 flex w-full rounded-md shadow-sm md:mt-0 md:w-auto md:ml-3 mb-5 md:mb-0">
+                        <span
+                          onClick={() => dispatch({ type: "reset" })}
+                          className="mt-3 flex w-full rounded-md shadow-sm md:mt-0 md:w-auto md:ml-3 mb-5 md:mb-0"
+                        >
                           <button
                             type="button"
                             className="inline-flex justify-center w-full rounded-md border border-gray-700 px-4 py-2 bg-gray-600 text-base leading-6 font-medium text-gray-900 shadow-sm hover:text-white focus:outline-none focus:border-gray-400 focus:shadow-outline-blue transition ease-in-out duration-300 md:text-sm md:leading-5"

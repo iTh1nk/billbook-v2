@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { Layout } from "../../components/Layout";
-import Admin from "../../components/Admin";
+import Admin from "../../components/admin/Admin";
 
 interface Props {}
 

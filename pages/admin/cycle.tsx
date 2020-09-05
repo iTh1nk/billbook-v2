@@ -1,6 +1,6 @@
 import React, { useState, useReducer, useContext } from "react";
-import Admin from "../../components/Admin";
-import AdminPanel from "../../components/AdminPanel";
+import Admin from "../../components/admin/Admin";
+import AdminPanel from "../../components/admin/AdminPanel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUndo, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { Formik, Field, Form, FormikHelpers } from "formik";
@@ -17,12 +17,10 @@ import useSWR from "swr";
 interface Props {}
 
 type Values = {
-  // date: string;
-  amount: string;
-  totalBalance: string;
+  date: string;
 };
 
-type AdminActivitiesState = {
+type AdminCyclesState = {
   tab: string;
   isLoading: boolean;
   error: string;
@@ -30,9 +28,10 @@ type AdminActivitiesState = {
   date: string;
   amount: string;
   totalBalance: string;
+  selectedDate: Date;
 };
 
-const initialState: AdminActivitiesState = {
+const initialState: AdminCyclesState = {
   tab: "home",
   isLoading: false,
   error: "",
@@ -40,17 +39,19 @@ const initialState: AdminActivitiesState = {
   date: "",
   amount: "",
   totalBalance: "",
+  selectedDate: new Date(),
 };
 
-type AdminActivitiesAction =
-  | { type: "submitting" | "success" }
+type AdminCyclesAction =
+  | { type: "submitting" | "success" | "reset" }
   | { type: "error"; payload: string }
   | { type: "tab"; tabName: string }
-  | { type: "field"; fieldName: string; payload: string };
+  | { type: "field"; fieldName: string; payload: string }
+  | { type: "selectDate"; payload: Date };
 
-function adminActivitiesReducer(
-  state: AdminActivitiesState,
-  action: AdminActivitiesAction
+function adminCyclesReducer(
+  state: AdminCyclesState,
+  action: AdminCyclesAction
 ) {
   switch (action.type) {
     case "tab":
@@ -58,15 +59,36 @@ function adminActivitiesReducer(
         ...state,
         tab: action.tabName,
       };
+    case "selectDate":
+      return {
+        ...state,
+        selectedDate: action.payload,
+      };
+    case "success":
+      return {
+        ...state,
+        selectedDate: new Date(),
+        errors: "",
+      };
+    case "error":
+      return {
+        ...state,
+        error: action.payload,
+      };
+    case "reset":
+      return {
+        ...state,
+        error: "",
+        selectedDate: new Date(),
+      };
   }
 }
 
 const Cycle: React.FunctionComponent<Props> = ({}) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const [state, dispatch] = useReducer(adminActivitiesReducer, initialState);
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [state, dispatch] = useReducer(adminCyclesReducer, initialState);
   const handleChangeDatePicker = (date) => {
-    setSelectedDate(date);
+    dispatch({ type: "selectDate", payload: date });
   };
 
   const fetcher = async () => {
@@ -76,14 +98,18 @@ const Cycle: React.FunctionComponent<Props> = ({}) => {
     const data = await res.json();
     return data;
   };
-  const { data, error } = useSWR("/activities/get/", fetcher);
+  const { data, error } = useSWR("/Cycles/get/", fetcher, {
+    refreshInterval: 1000,
+  });
   if (error) return <IsError />;
   if (!data) return <IsLoading />;
 
   return (
     <div>
       <Admin>
-        <AdminPanel>
+        <AdminPanel
+          cbTab={(tabName) => dispatch({ type: "tab", tabName: tabName })}
+        >
           {/* START - HOME */}
           <div className={state.tab === "home" ? "inline" : "hidden"}>
             {data.map((item, idx) => (
@@ -118,41 +144,35 @@ const Cycle: React.FunctionComponent<Props> = ({}) => {
             </div>
             <Formik
               initialValues={{
-                amount: "",
-                totalBalance: "",
+                date: "",
               }}
-              validationSchema={Yup.object().shape({
-                amount: Yup.string()
-                  .max(10, "Amount is too long")
-                  .required("Amount is required"),
-                totalBalance: Yup.string()
-                  .max(10, "Total balance is too long")
-                  .required("Total balance is required"),
-              })}
               onSubmit={(
                 values: Values,
                 { setSubmitting, resetForm }: FormikHelpers<Values>
               ) => {
                 let dataToSubmit = {
-                  date: moment(selectedDate).format("YYYY-MM-DD"),
-                  amount: values.amount,
-                  totalBalance: values.totalBalance,
+                  date: moment(state.selectedDate).format("YYYY-MM-DD"),
                 };
                 console.log(dataToSubmit);
                 Axios.post(
-                  process.env.NEXT_PUBLIC_API + "activities/post/",
+                  process.env.NEXT_PUBLIC_API + "cycles/post/",
                   dataToSubmit,
                   { headers: { authorization: localStorage.getItem("auth") } }
                 )
                   .then((resp) => {
                     setSubmitting(false);
                     console.log("Posted!");
+                    dispatch({ type: "success" });
                     resetForm();
-                    toasterNotes(true, 5000);
+                    toasterNotes("success", 5000);
                   })
                   .catch((err) => {
                     setSubmitting(false);
-                    toasterNotes(false, 5000);
+                    toasterNotes("error", 5000);
+                    dispatch({
+                      type: "error",
+                      payload: err.response.data.date[0],
+                    });
                     console.log(err, err.response);
                   });
               }}
@@ -175,93 +195,52 @@ const Cycle: React.FunctionComponent<Props> = ({}) => {
                     </label>
                     <DatePicker
                       className="text-gray-800 rounded-sm py-2 px-3 leading-tight"
-                      selected={selectedDate}
+                      selected={state.selectedDate}
                       onChange={handleChangeDatePicker}
                       dateFormat="yyyy-MM-dd"
                     />
                   </div>
-                  <div className="mb-2">
-                    <label
-                      className="block uppercase text-gray-300 text-sm font-bold mb-2"
-                      htmlFor="password"
-                    >
-                      Amount
-                    </label>
-                    <Field
-                      className={
-                        (errors.amount ? " border-red-500 rounded " : "") +
-                        "shadow appearance-none border w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                      }
-                      name="amount"
-                      type="text"
-                      placeholder="Amount..."
-                    />
-                    <p className="text-red-500 text-xs italic">
-                      {errors.amount && touched.amount ? (
-                        <span>{errors.amount}</span>
-                      ) : null}
-                    </p>
-                  </div>
-                  <div className="mb-6">
-                    <label
-                      className="block uppercase text-gray-300 text-sm font-bold mb-2"
-                      htmlFor="password"
-                    >
-                      Total Balance:
-                    </label>
-                    <Field
-                      className={
-                        (errors.amount ? " border-red-500 rounded " : "") +
-                        "shadow appearance-none border w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
-                      }
-                      name="totalBalance"
-                      type="text"
-                      placeholder="Total balance..."
-                    />
-                    <p className="text-red-500 text-xs italic">
-                      {errors.amount && touched.amount ? (
-                        <span>{errors.amount}</span>
-                      ) : null}
-                    </p>
-                  </div>
 
-                  <div>
-                    <div>
-                      <div className="py-3 md:flex md:flex-row-reverse">
-                        <span className="mt-3 flex w-full rounded-md shadow-sm md:mt-0 md:w-auto md:ml-3 mb-5 md:mb-0">
-                          <button
-                            type="button"
-                            className="inline-flex justify-center w-full rounded-md border border-gray-700 px-4 py-2 bg-gray-600 text-base leading-6 font-medium text-gray-900 shadow-sm hover:text-white focus:outline-none focus:border-gray-400 focus:shadow-outline-blue transition ease-in-out duration-300 md:text-sm md:leading-5"
-                            onClick={handleReset}
-                          >
-                            Reset
-                            <FontAwesomeIcon
-                              className="ml-1 mt-1 h-3"
-                              icon={faUndo}
-                            />
-                          </button>
-                        </span>
-                        <span className="flex w-full rounded-md shadow-sm md:w-auto">
-                          <button
-                            type="submit"
-                            className={
-                              (isSubmitting ? " opacity-50 " : "") +
-                              "inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-400 focus:outline-none focus:border-gray-400 focus:shadow-outline-orange transition ease-in-out duration-300 md:text-sm md:leading-5"
-                            }
-                            disabled={isSubmitting}
-                          >
-                            Submit
-                            <div
-                              className={
-                                isSubmitting ? " animate-spin ml-1" : " hidden "
-                              }
-                            >
-                              <FontAwesomeIcon icon={faCircleNotch} />
-                            </div>
-                          </button>
-                        </span>
-                      </div>
-                    </div>
+                  <div className="py-3 md:flex md:flex-row-reverse">
+                    <span className="mt-3 flex w-full rounded-md shadow-sm md:mt-0 md:w-auto md:ml-3 mb-5 md:mb-0">
+                      <button
+                        type="button"
+                        className="inline-flex justify-center w-full rounded-md border border-gray-700 px-4 py-2 bg-gray-600 text-base leading-6 font-medium text-gray-900 shadow-sm hover:text-white focus:outline-none focus:border-gray-400 focus:shadow-outline-blue transition ease-in-out duration-300 md:text-sm md:leading-5"
+                        onClick={() => {
+                          // handleReset;
+                          dispatch({ type: "reset" });
+                        }}
+                      >
+                        Reset
+                        <FontAwesomeIcon
+                          className="ml-1 mt-1 h-3"
+                          icon={faUndo}
+                        />
+                      </button>
+                    </span>
+                    <span className="flex w-full rounded-md shadow-sm md:w-auto">
+                      <button
+                        type="submit"
+                        className={
+                          (isSubmitting ? " opacity-50 " : "") +
+                          "inline-flex justify-center w-full rounded-md border border-transparent px-4 py-2 bg-green-600 text-base leading-6 font-medium text-white shadow-sm hover:bg-green-400 focus:outline-none focus:border-gray-400 focus:shadow-outline-orange transition ease-in-out duration-300 md:text-sm md:leading-5"
+                        }
+                        disabled={isSubmitting}
+                      >
+                        Submit
+                        <div
+                          className={
+                            isSubmitting ? " animate-spin ml-1" : " hidden "
+                          }
+                        >
+                          <FontAwesomeIcon icon={faCircleNotch} />
+                        </div>
+                      </button>
+                    </span>
+                    <br />
+                    <span className="text-red-500 ml-5 md:mt-2 md: mr-5">
+                      {state.error}
+                    </span>
                   </div>
                 </Form>
               )}

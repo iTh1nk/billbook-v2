@@ -1,6 +1,12 @@
-import React, { useState, useReducer, useContext } from "react";
-import Admin from "../../components/Admin";
-import AdminPanel from "../../components/AdminPanel";
+import React, {
+  useState,
+  useReducer,
+  useContext,
+  useEffect,
+  ReactComponentElement,
+} from "react";
+import Admin from "../../components/admin/Admin";
+import AdminPanel from "../../components/admin/AdminPanel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faUndo, faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import { Formik, Field, Form, FormikHelpers } from "formik";
@@ -14,6 +20,7 @@ import moment from "moment";
 import { AssignContext } from "../../components/AssignContext";
 import useLoggedIn from "../../components/hooks/useLoggedIn";
 import useSWR from "swr";
+import Select from "react-select";
 
 interface Props {}
 
@@ -31,6 +38,10 @@ type AdminActivitiesState = {
   date: string;
   amount: string;
   totalBalance: string;
+  selectedDate: Date;
+  selectedUser: SelectedUser;
+  userOptions: Array<SelectedUser>;
+  switchTab: JSX.Element;
 };
 
 const initialState: AdminActivitiesState = {
@@ -41,13 +52,21 @@ const initialState: AdminActivitiesState = {
   date: "",
   amount: "",
   totalBalance: "",
+  selectedDate: new Date(),
+  selectedUser: null,
+  userOptions: [],
+  switchTab: null,
 };
 
 type AdminActivitiesAction =
   | { type: "submitting" | "success" }
   | { type: "error"; payload: string }
   | { type: "tab"; tabName: string }
-  | { type: "field"; fieldName: string; payload: string };
+  | { type: "field"; fieldName: string; payload: string }
+  | { type: "chooseDate"; payload: string }
+  | { type: "selectUser"; payload: SelectedUser }
+  | { type: "userOptions"; payload: Array<SelectedUser> }
+  | { type: "switchTab"; payload: string };
 
 function adminActivitiesReducer(
   state: AdminActivitiesState,
@@ -59,58 +78,114 @@ function adminActivitiesReducer(
         ...state,
         tab: action.tabName,
       };
+    case "success":
+      return {
+        ...state,
+        selectedDate: new Date(),
+        selectedUser: null,
+      };
+    case "chooseDate":
+      return {
+        ...state,
+        selectedDate: action.payload,
+      };
+    case "selectUser":
+      return {
+        ...state,
+        selectedUser: action.payload,
+      };
+    case "userOptions":
+      return {
+        ...state,
+        userOptions: action.payload,
+      };
+    case "switchTab":
+      return {
+        ...state,
+        switchTab: action.payload === "loading" ? <IsLoading /> : <IsError />,
+      };
   }
 }
+type SelectedUser = {
+  value: string;
+  label: string;
+};
 
 const Activity: React.FunctionComponent<Props> = ({}) => {
   const { userLoggedIn } = useLoggedIn(null);
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [state, dispatch] = useReducer(adminActivitiesReducer, initialState);
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const handleChangeDatePicker = (date) => {
-    setSelectedDate(date);
+    dispatch({ type: "chooseDate", payload: date });
+  };
+  const handleSelectOnChange = (user) => {
+    dispatch({ type: "selectUser", payload: user });
   };
 
-  const fetcher = async () => {
+  useEffect(() => {
+    Axios.get(process.env.NEXT_PUBLIC_API + "auth/get/", {
+      headers: { authorization: localStorage.getItem("auth") },
+    })
+      .then((resp) => {
+        dispatch({
+          type: "userOptions",
+          payload: resp.data.map((item) => ({
+            label: item.email,
+            value: item.id,
+          })),
+        });
+      })
+      .catch((err) => {
+        console.log(err, err.response);
+      });
+  }, []);
+
+  const fetcherActivities = async () => {
     const res = await fetch(process.env.NEXT_PUBLIC_API + "activities/get/", {
       headers: { authorization: localStorage.getItem("auth") },
     });
     const data = await res.json();
     return data;
   };
-  const { data, error } = useSWR("/activities/get/", fetcher);
-  if (error) return <IsError />;
-  if (!data) return <IsLoading />;
+  const {
+    data: dataActivities,
+    error: errorActivities,
+  } = useSWR("/activities/get/", fetcherActivities, { refreshInterval: 1000 });
+  if (errorActivities) return <IsError />;
+  if (!dataActivities) return <IsLoading />;
 
   return (
     <div>
       <Admin>
         <AdminPanel
-          cbTab={(tabName) => dispatch({ type: "tab", tabName: tabName })}
+          cbTab={(tabName) => {
+            dispatch({ type: "tab", tabName: tabName });
+          }}
         >
+          {state.switchTab}
           {/* START - HOME */}
           <div className={state.tab === "home" ? "inline" : "hidden"}>
-            {data.map((item, idx) => (
+            {dataActivities.map((item, idx) => (
               <div key={item.id}>
-              <div className=" mt-5">
-                {idx + 1}.{" "}
-                <span className="underline font-bold">{item.date}</span>
-              </div>
+                <div className=" mt-5">
+                  {idx + 1}.{" "}
+                  <span className="underline font-bold">{item.date}</span>
+                </div>
                 <ul className="list-disc ml-6">
                   <li>
-                    <span className="text-gray-500">Amount:</span> ${item.amount}
+                    <span className="text-gray-500">Amount:</span> $
+                    {item.amount}
                   </li>
                   <li>
-                    <span className="text-gray-500">Total Balance:</span>{" "}
-                    ${item.totalBalance}
+                    <span className="text-gray-500">Total Balance:</span> $
+                    {item.totalBalance}
                   </li>
                   <li>
                     <span className="text-gray-500">is_read:</span>{" "}
                     {item.is_read}
                   </li>
                   <li>
-                    <span className="text-gray-500">User:</span>{" "}
-                    {item.user}
+                    <span className="text-gray-500">User:</span> {item.user}
                   </li>
                   <li>
                     <span className="text-gray-500">Created:</span>{" "}
@@ -137,24 +212,26 @@ const Activity: React.FunctionComponent<Props> = ({}) => {
                 totalBalance: "",
               }}
               validationSchema={Yup.object().shape({
-                amount: Yup.string()
-                  .max(10, "Amount is too long")
+                amount: Yup.number()
+                  .typeError("Amount has to be integer")
+                  .max(1000, "Amount is too big")
                   .required("Amount is required"),
-                totalBalance: Yup.string()
-                  .max(10, "Total balance is too long")
+                totalBalance: Yup.number()
+                  .typeError("Total balance has to be integer")
+                  .max(1000, "Total balance is too long")
                   .required("Total balance is required"),
               })}
               onSubmit={(
                 values: Values,
                 { setSubmitting, resetForm }: FormikHelpers<Values>
               ) => {
+                setSubmitting(false);
                 let dataToSubmit = {
-                  date: moment(selectedDate).format("YYYY-MM-DD"),
-                  amount: values.amount,
-                  totalBalance: values.totalBalance,
-                  user: userLoggedIn.id,
+                  date: moment(state.selectedDate).format("YYYY-MM-DD"),
+                  amount: values.amount.toString(),
+                  totalBalance: values.totalBalance.toString(),
+                  user: state.selectedUser.value,
                 };
-                console.log(dataToSubmit);
                 Axios.post(
                   process.env.NEXT_PUBLIC_API + "activities/post/",
                   dataToSubmit,
@@ -162,13 +239,14 @@ const Activity: React.FunctionComponent<Props> = ({}) => {
                 )
                   .then((resp) => {
                     setSubmitting(false);
+                    dispatch({ type: "success" });
                     console.log("Posted!");
                     resetForm();
-                    toasterNotes(true, 5000);
+                    toasterNotes("success", 5000);
                   })
                   .catch((err) => {
                     setSubmitting(false);
-                    toasterNotes(false, 5000);
+                    toasterNotes("error", 5000);
                     console.log(err, err.response);
                   });
               }}
@@ -183,17 +261,25 @@ const Activity: React.FunctionComponent<Props> = ({}) => {
               }) => (
                 <Form className="rounded pb-8 w-full mb-4">
                   <div className="mb-4 w-full">
-                    <label
-                      className="block uppercase text-gray-300 text-sm font-bold mb-2"
-                      htmlFor="username"
-                    >
+                    <label className="block uppercase text-gray-300 text-sm font-bold mb-2">
                       Pick Date
                     </label>
                     <DatePicker
                       className="text-gray-800 rounded-sm py-2 px-3 leading-tight"
-                      selected={selectedDate}
+                      selected={state.selectedDate}
                       onChange={handleChangeDatePicker}
                       dateFormat="yyyy-MM-dd"
+                    />
+                  </div>
+                  <div className="text-gray-600 mb-4">
+                    <label className="block uppercase text-gray-300 text-sm font-bold mb-2">
+                      Select User
+                    </label>
+                    <Select
+                      placeholder="Select User..."
+                      value={state.selectedUser}
+                      options={state.userOptions}
+                      onChange={handleSelectOnChange}
                     />
                   </div>
                   <div className="mb-2">
@@ -227,7 +313,9 @@ const Activity: React.FunctionComponent<Props> = ({}) => {
                     </label>
                     <Field
                       className={
-                        (errors.amount ? " border-red-500 rounded " : "") +
+                        (errors.totalBalance
+                          ? " border-red-500 rounded "
+                          : "") +
                         "shadow appearance-none border w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline"
                       }
                       name="totalBalance"
@@ -235,8 +323,8 @@ const Activity: React.FunctionComponent<Props> = ({}) => {
                       placeholder="Total balance..."
                     />
                     <p className="text-red-500 text-xs italic">
-                      {errors.amount && touched.amount ? (
-                        <span>{errors.amount}</span>
+                      {errors.totalBalance && touched.totalBalance ? (
+                        <span>{errors.totalBalance}</span>
                       ) : null}
                     </p>
                   </div>
