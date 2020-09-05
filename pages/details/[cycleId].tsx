@@ -58,14 +58,10 @@ const Details: React.FunctionComponent<Props> = ({ detail }) => {
 };
 
 export async function getStaticPaths() {
-  try {
-    const res = await fetch(process.env.NEXT_PUBLIC_API + "cycles/get");
-    const details = await res.json();
-    const paths = details.map((item) => `/details/${item.id}`);
-    return { paths, fallback: true };
-  } catch {
-    return;
-  }
+  const res = await fetch(process.env.NEXT_PUBLIC_API + "cycles/get");
+  const details = await res.json();
+  const paths = details.map((item) => `/details/${item.id}`);
+  return { paths, fallback: true };
 }
 
 export async function getStaticProps(context) {
