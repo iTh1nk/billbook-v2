@@ -44,7 +44,10 @@ const Index: React.FunctionComponent<Props> = ({
 
   const fetcher = async () => {
     const res = await fetch(
-      process.env.NEXT_PUBLIC_API + "activities/get/user/" + userLoggedIn.id + "/",
+      process.env.NEXT_PUBLIC_API +
+        "activities/get/user/" +
+        userLoggedIn.id +
+        "/",
       { headers: { authorization: localStorage.getItem("auth") } }
     );
     const data = await res.json();
@@ -68,7 +71,7 @@ const Index: React.FunctionComponent<Props> = ({
                   Balance as of cycle:
                 </div>
                 <div className="text-6xl mt-5 ml-5 animate-bounce-slow md:inline font-mono font-semibold">
-                  ${data.totalBalance}
+                  ${data?.totalBalance}
                 </div>
               </div>
             </div>
@@ -122,7 +125,7 @@ export async function getStaticProps() {
       props: {
         dataProps,
         yearArr,
-        balance: "0",
+        balance: { totalBalance: "0" },
       },
     };
   } catch (err) {
