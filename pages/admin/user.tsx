@@ -255,15 +255,15 @@ const User: React.FunctionComponent<Props> = ({}) => {
                   )
                   .required("Username is required"),
                 password: Yup.string()
-                  .min(5, "Password is too short")
+                  .min(4, "Password is too short")
                   .max(50, "Password is too long")
                   .required("Password is required"),
                 firstName: Yup.string()
-                  .min(3, "First name is too short")
+                  .min(2, "First name is too short")
                   .max(10, "First name is too long")
                   .required("First name is required"),
                 lastName: Yup.string()
-                  .min(3, "Last name is too short")
+                  .min(2, "Last name is too short")
                   .max(10, "Last name is too long")
                   .required("Last name is required"),
                 phoneNumber: Yup.number()
@@ -295,7 +295,6 @@ const User: React.FunctionComponent<Props> = ({}) => {
                     gender: values.gender,
                   },
                 };
-                console.log(dataToSubmit);
                 Axios.post(
                   process.env.NEXT_PUBLIC_API + "auth/signup/",
                   dataToSubmit,
@@ -605,7 +604,7 @@ const User: React.FunctionComponent<Props> = ({}) => {
                     .then((resp) => {
                       setSubmitting(false);
                       console.log("Posted!");
-                      undefined;
+                      setSelectedUser(null);
                       toasterNotes("success", 5000);
                     })
                     .catch((err) => {
