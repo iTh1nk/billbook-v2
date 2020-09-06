@@ -27,7 +27,9 @@ const Details: React.FunctionComponent<Props> = ({ detail }) => {
   return (
     <Layout title="Monthly Details">
       <Container>
-        <div className="font-mono text-center mt-2 text-gray-600">Billing Cycle: {detail?.date}</div>
+        <div className="font-mono text-center mt-2 text-gray-600">
+          Billing Cycle: {detail?.date}
+        </div>
         <div className="flex justify-center">
           <table className="table-auto text-center">
             <thead>
@@ -72,7 +74,7 @@ export async function getStaticProps(context) {
       `${process.env.NEXT_PUBLIC_API}cycles/get/${context.params.cycleId}`
     );
     const detail = await res.json();
-    return { props: { detail } };
+    return { props: { detail }, revalidate: 2 };
   } catch {
     return;
   }
