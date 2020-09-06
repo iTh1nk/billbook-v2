@@ -10,10 +10,11 @@ type CycleStatements = {
   updateAt: string;
   user: string;
   cycle: number;
-  username: number;
+  username: string;
 };
 type Data = {
   id: number;
+  date: string;
   cycle_statements: Array<CycleStatements>;
 };
 interface Props {
@@ -26,6 +27,7 @@ const Details: React.FunctionComponent<Props> = ({ detail }) => {
   return (
     <Layout title="Monthly Details">
       <Container>
+        <div className="font-mono text-center mt-2 text-gray-600">Billing Cycle: {detail?.date}</div>
         <div className="flex justify-center">
           <table className="table-auto text-center">
             <thead>
@@ -44,7 +46,7 @@ const Details: React.FunctionComponent<Props> = ({ detail }) => {
             <tbody>
               {detail?.cycle_statements?.map((item, idx) => (
                 <tr key={item.id} className="hover:bg-gray-900">
-                  <td className="py-5">{item.username}</td>
+                  <td className="py-5">{item.username.match(/[^@]*/)}</td>
                   <td className="py-5">${item.balance}</td>
                   <td className="py-5">{item.notes}</td>
                 </tr>
