@@ -81,6 +81,11 @@ const Index: React.FunctionComponent<Props> = ({
                     ${data?.totalBalance}
                   </span>
                 </div>
+                <div className="md:py-5 md:ml-2">
+                  {parseInt(data?.totalBalance) < 0
+                    ? ""
+                    : "(No action required)"}
+                </div>
               </div>
             </div>
           ) : (

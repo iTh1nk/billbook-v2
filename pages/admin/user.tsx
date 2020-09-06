@@ -190,7 +190,7 @@ const User: React.FunctionComponent<Props> = ({}) => {
                           )[0]?.totalBalance
                         ) < 0
                           ? " text-red-500 "
-                          : "") + "ml-2"
+                          : " text-green-500 ") + "ml-2"
                       }
                     >
                       $
