@@ -43,7 +43,9 @@ type AdminActivitiesState = {
   totalBalance: string;
   selectedDate: Date;
   selectedUser: SelectedUser;
+  selectedUserGet: SelectedUser;
   userOptions: Array<SelectedUser>;
+  userOptionsGet: Array<SelectedUser>;
   switchTab: JSX.Element;
   selectedDateUpdate: Date;
 };
@@ -59,7 +61,9 @@ const initialState: AdminActivitiesState = {
   selectedDate: new Date(),
   selectedDateUpdate: new Date(),
   selectedUser: null,
+  selectedUserGet: null,
   userOptions: [],
+  userOptionsGet: [],
   switchTab: null,
 };
 
@@ -70,8 +74,11 @@ type AdminActivitiesAction =
   | { type: "field"; fieldName: string; payload: string }
   | { type: "chooseDate"; payload: string }
   | { type: "chooseDateUpdate"; payload: string }
-  | { type: "selectUser"; payload: SelectedUser }
+  | { type: "selectedUser"; payload: SelectedUser }
+  | { type: "selectedUserGet"; payload: SelectedUser }
+  | { type: "resetSelectedUserGet" }
   | { type: "userOptions"; payload: Array<SelectedUser> }
+  | { type: "userOptionsGet"; payload: Array<SelectedUser> }
   | { type: "switchTab"; payload: string };
 
 function adminActivitiesReducer(
@@ -95,15 +102,30 @@ function adminActivitiesReducer(
         ...state,
         selectedDate: action.payload,
       };
-    case "selectUser":
+    case "selectedUser":
       return {
         ...state,
         selectedUser: action.payload,
+      };
+    case "selectedUserGet":
+      return {
+        ...state,
+        selectedUserGet: action.payload,
       };
     case "userOptions":
       return {
         ...state,
         userOptions: action.payload,
+      };
+    case "userOptionsGet":
+      return {
+        ...state,
+        userOptionsGet: action.payload,
+      };
+    case "resetSelectedUserGet":
+      return {
+        ...state,
+        selectedUserGet: null,
       };
     case "switchTab":
       return {
@@ -133,7 +155,10 @@ const Activity: React.FunctionComponent<Props> = ({}) => {
     dispatch({ type: "chooseDateUpdate", payload: date });
   };
   const handleSelectOnChange = (user) => {
-    dispatch({ type: "selectUser", payload: user });
+    dispatch({ type: "selectedUser", payload: user });
+  };
+  const handleSelectOnChangeGet = (user) => {
+    dispatch({ type: "selectedUserGet", payload: user });
   };
 
   const handleDelete = (id) => {
@@ -150,35 +175,43 @@ const Activity: React.FunctionComponent<Props> = ({}) => {
       });
   };
 
-  useEffect(() => {
-    Axios.get(process.env.NEXT_PUBLIC_API + "auth/get/", {
-      headers: { authorization: localStorage.getItem("auth") },
-    })
-      .then((resp) => {
-        dispatch({
-          type: "userOptions",
-          payload: resp.data.map((item) => ({
-            label: item.email,
-            value: item.id,
-          })),
-        });
-      })
-      .catch((err) => {
-        console.log(err, err.response);
-      });
-  }, []);
+  // useEffect(() => {
+  //   Axios.get(process.env.NEXT_PUBLIC_API + "auth/get/", {
+  //     headers: { authorization: localStorage.getItem("auth") },
+  //   })
+  //     .then((resp) => {})
+  //     .catch((err) => {
+  //       console.log(err, err.response);
+  //     });
+  // }, []);
 
   const fetcherActivities = async () => {
-    const res = await fetch(process.env.NEXT_PUBLIC_API + "activities/get/", {
+    const res = await fetch(process.env.NEXT_PUBLIC_API + "auth/get/", {
       headers: { authorization: localStorage.getItem("auth") },
     });
     const data = await res.json();
+    dispatch({
+      type: "userOptions",
+      payload: data.map((item) => ({
+        label: item.email,
+        value: item.id,
+      })),
+    });
+    dispatch({
+      type: "userOptionsGet",
+      payload: data.map((item) => ({
+        label: item.email,
+        value: item.id,
+      })),
+    });
+
     return data;
   };
-  const {
-    data: dataActivities,
-    error: errorActivities,
-  } = useSWR("/activities/get/", fetcherActivities, { refreshInterval: 1000 });
+  const { data: dataActivities, error: errorActivities } = useSWR(
+    "/auth/get/",
+    fetcherActivities,
+    { refreshInterval: 1000 }
+  );
   if (errorActivities) return <IsError />;
   if (!dataActivities) return <IsLoading />;
 
@@ -190,55 +223,94 @@ const Activity: React.FunctionComponent<Props> = ({}) => {
             dispatch({ type: "tab", tabName: tabName });
           }}
         >
-          {state.switchTab}
+          {/* {state.switchTab} */}
           {/* START - HOME */}
           <div className={state.tab === "home" ? "inline" : "hidden"}>
-            {dataActivities.length !== 0 ? (
-              dataActivities.map((item, idx) => (
-                <div key={item.id}>
-                  <div className=" mt-5">
-                    {idx + 1}.{" "}
-                    <span className="underline font-bold">{item.date}</span>
-                    <FontAwesomeIcon
-                      onClick={() => {
-                        handleDelete(item.id);
-                      }}
-                      className="ml-2 text-red-500 cursor-pointer"
-                      icon={faTrashAlt}
-                    />
-                  </div>
-                  <ul className="list-disc ml-6">
-                    <li>
-                      <span className="text-gray-500">Amount:</span> $
-                      {item.amount}
-                    </li>
-                    <li>
-                      <span className="text-gray-500">Total Balance:</span> $
-                      {item.totalBalance}
-                    </li>
-                    <li>
-                      <span className="text-gray-500">is_read:</span>{" "}
-                      {item.is_read}
-                    </li>
-                    <li>
-                      <span className="text-gray-500">User:</span> {item.user}
-                    </li>
-                    <li>
-                      <span className="text-gray-500">Created:</span>{" "}
-                      {item.createdAt}
-                    </li>
-                    <li>
-                      <span className="text-gray-500">Updated:</span>{" "}
-                      {item.updatedAt}
-                    </li>
-                  </ul>
+            <label className="block uppercase text-gray-300 text-sm font-bold mb-3">
+              Select User
+            </label>
+            <div className="text-gray-600 mb-4 flex justify-between">
+              <Select
+                className="inline-block w-full"
+                placeholder="Select User..."
+                value={state.selectedUserGet}
+                options={state.userOptionsGet}
+                onChange={handleSelectOnChangeGet}
+              />
+              <button
+                className="inline-block ml-2 md:ml-5 text-gray-300 ease-in-out duration-300 bg-gray-600 rounded-lg p-2 hover:text-white hover:bg-gray-500 outline-none"
+                onClick={() => {
+                  dispatch({ type: "resetSelectedUserGet" });
+                }}
+              >
+                Collapse
+              </button>
+            </div>
+            <div
+              className={
+                (state.selectedUserGet === undefined ||
+                state.selectedUserGet === null
+                  ? " invisible opacity-0 duration-300 ease-in-out "
+                  : " visible opacity-100 duration-300 ease-in-out transform translate-y-5 ") +
+                " w-full"
+              }
+            >
+              {dataActivities.length !== 0 ? (
+                dataActivities.map((itemTop) =>
+                  itemTop.id === state.selectedUserGet?.value
+                    ? itemTop.user_activities.map((item, idx) => (
+                        <div key={item.id}>
+                          <div className=" mt-5">
+                            {idx + 1}.{" "}
+                            <span className="underline font-bold">
+                              {item.date}
+                            </span>
+                            <FontAwesomeIcon
+                              onClick={() => {
+                                handleDelete(item.id);
+                              }}
+                              className="ml-2 text-red-500 cursor-pointer"
+                              icon={faTrashAlt}
+                            />
+                          </div>
+                          <ul className="list-disc ml-6">
+                            <li>
+                              <span className="text-gray-500">Amount:</span> $
+                              {item.amount}
+                            </li>
+                            <li>
+                              <span className="text-gray-500">
+                                Total Balance:
+                              </span>{" "}
+                              ${item.totalBalance}
+                            </li>
+                            <li>
+                              <span className="text-gray-500">is_read:</span>{" "}
+                              {item.is_read}
+                            </li>
+                            <li>
+                              <span className="text-gray-500">User:</span>{" "}
+                              {item.user}
+                            </li>
+                            <li>
+                              <span className="text-gray-500">Created:</span>{" "}
+                              {item.createdAt}
+                            </li>
+                            <li>
+                              <span className="text-gray-500">Updated:</span>{" "}
+                              {item.updatedAt}
+                            </li>
+                          </ul>
+                        </div>
+                      ))
+                    : null
+                )
+              ) : (
+                <div className="font-mono text-lg animate-pulse">
+                  No data has been recorded yet...
                 </div>
-              ))
-            ) : (
-              <div className="font-mono text-lg animate-pulse">
-                No data has been recorded yet...
-              </div>
-            )}
+              )}
+            </div>
           </div>
           {/* END - HOME */}
 

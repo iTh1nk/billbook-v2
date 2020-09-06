@@ -5,6 +5,7 @@ import Link from "next/link";
 import Axios from "axios";
 import { AssignContext } from "../AssignContext";
 import useLoggedIn from "../hooks/useLoggedIn";
+import IsLoading from "../IsLoading";
 
 interface Props {
   children: React.ReactNode;
@@ -30,13 +31,15 @@ const Admin: React.FunctionComponent<Props> = ({ children }) => {
     )
       .then((resp) => {
         if (resp.data.message === "pass") setIsLoading(false);
+        setIsLoading(false);
       })
       .catch((err) => {
-        setIsLoading(false);
         window.location.replace("/");
         console.log(err, err.response);
       });
   });
+
+  if (isLoading) return <IsLoading />;
 
   return (
     <div>

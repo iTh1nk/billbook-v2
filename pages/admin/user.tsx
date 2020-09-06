@@ -203,6 +203,10 @@ const User: React.FunctionComponent<Props> = ({}) => {
                   </div>
                   <ul className="list-disc ml-6">
                     <li>
+                      <span className="text-gray-500">id: </span>
+                      {item.profile?.id}
+                    </li>
+                    <li>
                       <span className="text-gray-500">First Name:</span>
                       {item.profile?.first_name}
                     </li>
@@ -556,7 +560,7 @@ const User: React.FunctionComponent<Props> = ({}) => {
             <div className="mb-5 font-mono font-bold uppercase text-lg italic">
               Make an update:{" "}
             </div>
-            <div className="text-gray-600 md:flex md:justify-between">
+            <div className="text-gray-600 flex justify-between">
               <Select
                 className="inline-block w-full"
                 placeholder="Select User..."
@@ -566,7 +570,7 @@ const User: React.FunctionComponent<Props> = ({}) => {
                 onChange={handleSelectOnChange}
               />
               <button
-                className="inline-block md:ml-5 text-gray-300 ease-in-out duration-300 bg-gray-600 rounded-lg p-2 hover:text-white hover:bg-gray-500 outline-none"
+                className="inline-block ml-2 md:ml-5 text-gray-300 ease-in-out duration-300 bg-gray-600 rounded-lg p-2 hover:text-white hover:bg-gray-500 outline-none"
                 onClick={() => {
                   setSelectedUser(null);
                 }}
