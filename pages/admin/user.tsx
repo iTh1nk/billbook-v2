@@ -1,4 +1,4 @@
-import React, { useState, useReducer, useContext } from "react";
+import React, { useState, useReducer, useContext, useEffect } from "react";
 import Admin from "../../components/admin/Admin";
 import AdminPanel from "../../components/admin/AdminPanel";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
@@ -182,6 +182,24 @@ const User: React.FunctionComponent<Props> = ({}) => {
                   <div className=" mt-5">
                     {idx + 1}.{" "}
                     <span className="underline font-bold">{item.email}</span>
+                    <span
+                      className={
+                        (parseInt(
+                          item.user_activities?.sort(
+                            (a, b) => Date.parse(b.date) - Date.parse(a.date)
+                          )[0]?.totalBalance
+                        ) < 0
+                          ? " text-red-500 "
+                          : "") + "ml-2"
+                      }
+                    >
+                      $
+                      {
+                        item.user_activities?.sort(
+                          (a, b) => Date.parse(b.date) - Date.parse(a.date)
+                        )[0]?.totalBalance
+                      }
+                    </span>
                   </div>
                   <ul className="list-disc ml-6">
                     <li>

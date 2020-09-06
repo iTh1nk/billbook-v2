@@ -56,29 +56,43 @@ const Profile = ({}) => {
           <div className="md:flex md:justify-center">
             <div>
               <div className=" text-green-500 cursor-default mt-5">
-                Your Activities
+                Your Transfer Activities
                 <span className=" animate-pulse"> : </span>{" "}
                 <span className={pulseDelay ? " animate-pulse" : ""}>:</span>
               </div>
               <table className="md:ml-5">
                 <thead>
                   <tr>
-                    <th className="py-10">Date</th>
-                    <th className="py-10">Deposit</th>
-                    <th className="py-10">Balance</th>
+                    <th className="py-10 px-5 md:px-10  text-gray-500 text-xl font-mono">
+                      Date
+                    </th>
+                    <th className="py-10 px-5 md:px-10  text-gray-500 text-xl font-mono">
+                      Deposit
+                    </th>
+                    <th className="py-10 px-5 md:px-10  text-gray-500 text-xl font-mono">
+                      Balance
+                    </th>
                   </tr>
                 </thead>
                 <tbody>
                   {data?.user_activities?.map((item, idx) => (
                     <tr
                       key={item.id}
-                      className="text-gray-500 cursor-default transition duration-500 hover:text-gray-200"
+                      className="text-gray-300 cursor-default transition duration-500 hover:text-gray-200"
                     >
-                      <th className="px-8 py-2">
-                        {item.date.substring(5, item.date.length)}
-                      </th>
+                      <th className="px-8 py-2">{item.date}</th>
                       <th className="px-8 py-2">${item.amount}</th>
-                      <th className="px-8 py-2">${item.totalBalance}</th>
+                      <th className="px-8 py-2">
+                        <span
+                          className={
+                            (parseInt(item.totalBalance) < 0
+                              ? " text-red-500 "
+                              : " text-white ") + " py-5 "
+                          }
+                        >
+                          ${item.totalBalance}
+                        </span>
+                      </th>
                     </tr>
                   ))}
                 </tbody>

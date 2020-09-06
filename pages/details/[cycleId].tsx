@@ -34,13 +34,13 @@ const Details: React.FunctionComponent<Props> = ({ detail }) => {
           <table className="table-auto text-center">
             <thead>
               <tr>
-                <th className="py-10 px-5 md:py-10 md:px-10 border-b-2 text-gray-500 text-xl font-mono">
+                <th className="py-10 px-5 md:px-10 border-b-2 text-gray-500 text-xl font-mono">
                   User
                 </th>
-                <th className="py-10 px-5 md:py-10 md:px-10 border-b-2 text-gray-500 text-xl font-mono">
+                <th className="py-10 px-5 md:px-10 border-b-2 text-gray-500 text-xl font-mono">
                   Balance
                 </th>
-                <th className="py-10 px-5 md:py-10 md:px-10 border-b-2 text-gray-500 text-xl font-mono">
+                <th className="py-10 px-5 md:px-10 border-b-2 text-gray-500 text-xl font-mono">
                   Notes
                 </th>
               </tr>

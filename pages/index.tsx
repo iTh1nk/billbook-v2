@@ -54,7 +54,7 @@ const Index: React.FunctionComponent<Props> = ({
     return data;
   };
   const { data, error } = useSWR(
-    "/activities/get/" + userLoggedIn.id + "/",
+    "/activities/get/user/" + userLoggedIn.id + "/",
     fetcher,
     { initialData: balanceProps }
   );
@@ -71,7 +71,15 @@ const Index: React.FunctionComponent<Props> = ({
                   Balance as of cycle:
                 </div>
                 <div className="text-6xl mt-5 ml-5 animate-bounce-slow md:inline font-mono font-semibold">
-                  ${data?.totalBalance}
+                  <span
+                    className={
+                      (parseInt(data?.totalBalance) < 0
+                        ? " text-red-500 "
+                        : " text-white ") + " "
+                    }
+                  >
+                    ${data?.totalBalance}
+                  </span>
                 </div>
               </div>
             </div>
