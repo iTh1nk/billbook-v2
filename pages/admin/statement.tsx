@@ -204,7 +204,7 @@ const Statement: React.FunctionComponent<Props> = ({}) => {
         >
           {/* START - HOME */}
           <div className={state.tab === "home" ? "inline" : "hidden"}>
-            {data === [] ? (
+            {data.length !== 0 ? (
               data.map((item, idx) => (
                 <div key={item.id}>
                   <div className=" mt-5">

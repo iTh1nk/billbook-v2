@@ -193,7 +193,7 @@ const Activity: React.FunctionComponent<Props> = ({}) => {
           {state.switchTab}
           {/* START - HOME */}
           <div className={state.tab === "home" ? "inline" : "hidden"}>
-            {dataActivities === [] ? (
+            {dataActivities.length !== 0 ? (
               dataActivities.map((item, idx) => (
                 <div key={item.id}>
                   <div className=" mt-5">
