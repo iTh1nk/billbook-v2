@@ -276,7 +276,6 @@ const Statement: React.FunctionComponent<Props> = ({}) => {
                   cycle: state.selectedCycle.value,
                   username: state.selectedUser.label,
                 };
-                console.log(dataToSubmit);
                 Axios.post(
                   process.env.NEXT_PUBLIC_API + "statements/post/",
                   dataToSubmit,

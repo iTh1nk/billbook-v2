@@ -96,7 +96,7 @@ const Cycle: React.FunctionComponent<Props> = ({}) => {
   };
 
   const handleDelete = (id) => {
-    Axios.delete(process.env.NEXT_PUBLIC_API + "cycle/delete/" + id + "/", {
+    Axios.delete(process.env.NEXT_PUBLIC_API + "cycles/delete/" + id + "/", {
       headers: { authorization: localStorage.getItem("auth") },
     })
       .then((resp) => {
@@ -144,6 +144,10 @@ const Cycle: React.FunctionComponent<Props> = ({}) => {
                     />
                   </div>
                   <ul className="list-disc ml-6">
+                    <li>
+                      <span className="text-gray-500">id:</span>{" "}
+                      {item.id}
+                    </li>
                     <li>
                       <span className="text-gray-500">is_read:</span>{" "}
                       {item.is_read}
