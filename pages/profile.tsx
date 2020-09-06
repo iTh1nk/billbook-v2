@@ -75,26 +75,28 @@ const Profile = ({}) => {
                   </tr>
                 </thead>
                 <tbody>
-                  {data?.user_activities?.map((item, idx) => (
-                    <tr
-                      key={item.id}
-                      className="text-gray-300 cursor-default transition duration-500 hover:text-gray-200"
-                    >
-                      <th className="px-8 py-2">{item.date}</th>
-                      <th className="px-8 py-2">${item.amount}</th>
-                      <th className="px-8 py-2">
-                        <span
-                          className={
-                            (parseInt(item.totalBalance) < 0
-                              ? " text-red-500 "
-                              : " text-white ") + " py-5 "
-                          }
-                        >
-                          ${item.totalBalance}
-                        </span>
-                      </th>
-                    </tr>
-                  ))}
+                  {data?.user_activities
+                    ?.sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
+                    .map((item, idx) => (
+                      <tr
+                        key={item.id}
+                        className="text-gray-300 cursor-default transition duration-500 hover:text-gray-200"
+                      >
+                        <th className="px-8 py-2">{item.date}</th>
+                        <th className="px-8 py-2">${item.amount}</th>
+                        <th className="px-8 py-2">
+                          <span
+                            className={
+                              (parseInt(item.totalBalance) < 0
+                                ? " text-red-500 "
+                                : " text-white ") + " py-5 "
+                            }
+                          >
+                            ${item.totalBalance}
+                          </span>
+                        </th>
+                      </tr>
+                    ))}
                 </tbody>
               </table>
             </div>
