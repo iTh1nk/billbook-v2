@@ -42,7 +42,7 @@ export const LoginForm: React.FunctionComponent<LoginFormProps> = (props) => {
               .max(10, "Username is too long")
               .required("Username is required"),
             password: Yup.string()
-              .min(5, "Password is too short")
+              .min(4, "Password is too short")
               .max(50, "Password is too long")
               .required("Password is required"),
           })}
