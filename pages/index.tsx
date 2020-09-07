@@ -129,7 +129,7 @@ const Index: React.FunctionComponent<Props> = ({
 
 export async function getStaticProps() {
   try {
-    const res = await fetch(process.env.NEXT_PUBLIC_API + "cycles/get/");
+    const res = await fetch(process.env.NEXT_PUBLIC_API + "cycles/get/index/");
     const dataProps = await res.json();
     let yearArr = [];
     dataProps.map((item) => yearArr.push(item.date.substring(0, 4)));
