@@ -17,6 +17,7 @@ import useLoggedIn from "../../components/hooks/useLoggedIn";
 import useSWR from "swr";
 import Select from "react-select";
 import StatementPage from "./statementPage";
+import ReactPaginate from "react-paginate";
 
 interface Props {}
 
@@ -43,6 +44,9 @@ type AdminStatementsState = {
   // selectedDate: Date;
   userOptions: Array<SelectedItem>;
   cycleOptions: Array<SelectedItem>;
+  pageSize: number;
+  currentPage: number;
+  totalPages: number;
 };
 
 const initialState: AdminStatementsState = {
@@ -58,6 +62,9 @@ const initialState: AdminStatementsState = {
   // selectedDate: new Date(),
   userOptions: [],
   cycleOptions: [],
+  pageSize: 6,
+  currentPage: 1,
+  totalPages: 0,
 };
 
 type AdminStatementsAction =
@@ -69,7 +76,10 @@ type AdminStatementsAction =
   | { type: "selectCycle"; payload: SelectedItem }
   | { type: "selectDate"; payload: Date }
   | { type: "userOptions"; payload: Array<SelectedItem> }
-  | { type: "cycleOptions"; payload: Array<SelectedItem> };
+  | { type: "cycleOptions"; payload: Array<SelectedItem> }
+  | { type: "pageChange"; page: number }
+  | { type: "pageSize"; page: number }
+  | { type: "totalPages"; page: number };
 
 function adminStatementsReducer(
   state: AdminStatementsState,
@@ -119,6 +129,21 @@ function adminStatementsReducer(
         selectedUser: null,
         selectedCycle: null,
       };
+    case "pageChange":
+      return {
+        ...state,
+        currentPage: action.page + 1,
+      };
+    case "pageSize":
+      return {
+        ...state,
+        pageSize: action.page,
+      };
+    case "totalPages":
+      return {
+        ...state,
+        totalPages: action.page,
+      };
   }
 }
 
@@ -133,6 +158,10 @@ const Statement: React.FunctionComponent<Props> = ({}) => {
   };
   const handleSelectOnChangeCycle = (cycle) => {
     dispatch({ type: "selectCycle", payload: cycle });
+  };
+
+  const handlePageClick = (e) => {
+    dispatch({ type: "pageChange", page: e.selected });
   };
 
   useEffect(() => {
@@ -176,7 +205,33 @@ const Statement: React.FunctionComponent<Props> = ({}) => {
         >
           {/* START - HOME */}
           <div className={state.tab === "home" ? "inline" : "hidden"}>
-            <StatementPage />
+            <StatementPage
+              pageSize={state.pageSize}
+              currentPage={state.currentPage}
+              cb={(num: number) => dispatch({ type: "totalPages", page: num })}
+            />
+            <div className="hidden">
+              <StatementPage
+                pageSize={state.pageSize}
+                currentPage={state.currentPage + 1}
+                cb={(num: number) =>
+                  dispatch({ type: "totalPages", page: num })
+                }
+              />
+            </div>
+            <ReactPaginate
+              previousLabel={"prev"}
+              nextLabel={"next"}
+              breakLabel={"..."}
+              breakClassName={"break-me"}
+              pageCount={state.totalPages}
+              marginPagesDisplayed={2}
+              pageRangeDisplayed={2}
+              onPageChange={handlePageClick}
+              containerClassName={"pagination"}
+              subContainerClassName={"pages pagination"}
+              activeClassName={"active"}
+            />
           </div>
           {/* END - HOME */}
 
