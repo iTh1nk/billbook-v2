@@ -19,7 +19,7 @@ const AdminPanel: React.FunctionComponent<Props> = ({ children, cbTab }) => {
 
   return (
     <div>
-      <div className="flex flex-col md:flex-row h-full mt-6">
+      <div className="flex flex-col md:flex-row h-full mt-6 light:text-gray-300">
         <nav className="bg-gray-900 md:w-20 flex-row justify-start md:justify-between flex md:flex-col md:h-screen">
           <div className="md:mt-10 md:mb-10 mt-5 mb-3">
             <FontAwesomeIcon

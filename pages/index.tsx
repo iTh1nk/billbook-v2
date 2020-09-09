@@ -9,6 +9,7 @@ import { LoginForm } from "../components/LoginForm";
 import Axios from "axios";
 import useLoggedIn from "../components/hooks/useLoggedIn";
 import useSWR from "swr";
+import IsLoading from "../components/IsLoading";
 
 type CycleStatements = {
   id: number;
@@ -40,7 +41,7 @@ const Index: React.FunctionComponent<Props> = ({
   const [isModalLogin, setIsModalLogin] = useState<boolean>(false);
   const [isModalGotIt, setIsModalGotIt] = useState<boolean>(false);
   const [balance, setBalance] = useState<string>("");
-  const { isAuthenticated, userLoggedIn } = useLoggedIn(null);
+  const { isAuthenticated, userLoggedIn, isLoading } = useLoggedIn(null);
 
   const fetcher = async () => {
     const res = await fetch(
@@ -59,6 +60,8 @@ const Index: React.FunctionComponent<Props> = ({
     { initialData: balanceProps }
   );
 
+  if(isLoading) return <IsLoading />
+
   return (
     <>
       <Layout title="Bill Book" showLogin={isModalLogin}>
@@ -66,7 +69,7 @@ const Index: React.FunctionComponent<Props> = ({
           {/* Start - Main section: balance */}
           {isAuthenticated ? (
             <div className="flex justify-center">
-              <div className="z-0 w-full bg-gradient-to-r from-teal-600 to-blue-500 p-4 rounded-lg flex flex-wrap justify-start items-end transition duration-300 ease-in-out transform hover:scale-98">
+              <div className="z-0 w-full bg-gradient-to-r from-teal-600 light:from-teal-300 to-blue-500 light:to-blue-300 p-4 rounded-lg flex flex-wrap justify-start items-end transition duration-300 ease-in-out transform hover:scale-98">
                 <div className="py-5 md:inline font-semibold">
                   Balance as of cycle:
                 </div>
@@ -74,7 +77,7 @@ const Index: React.FunctionComponent<Props> = ({
                   <span
                     className={
                       (parseInt(data?.totalBalance) < 0
-                        ? " text-red-500 "
+                        ? " text-red-500 light:text-red-600"
                         : " text-white ") + " "
                     }
                   >
@@ -90,8 +93,8 @@ const Index: React.FunctionComponent<Props> = ({
             </div>
           ) : (
             <div className="flex justify-center">
-              <div className="z-0 w-full  bg-gradient-to-r from-teal-600 to-blue-500 p-4 rounded-lg flex flex-wrap justify-start items-end transition duration-300 ease-in-out transform hover:scale-98">
-                <div className="text-xl p-5">
+              <div className="z-0 w-full  bg-gradient-to-r from-teal-600 light:from-teal-300 to-blue-500 light:to-blue-300 p-4 rounded-lg flex flex-wrap justify-start items-end transition duration-300 ease-in-out transform hover:scale-98">
+                <div className="text-xl p-5 font-semibold">
                   Please{" "}
                   <span
                     onClick={(e) => setIsModalLogin(!isModalLogin)}

@@ -50,36 +50,6 @@ const useLoggedIn = (trigger?, loading?) => {
       });
   }, [trigger]);
 
-  // const fetcher = async () => {
-  //   const res = await fetch(process.env.NEXT_PUBLIC_API + "auth/check/", {
-  //     method: "POST",
-  //     headers: {
-  //       Authorization: window.localStorage.getItem("auth"),
-  //     },
-  //   });
-  //   return await res.json();
-  // };
-  // const { data, error } = useSWR("/auth/check/", fetcher, {
-  //   refreshInterval: 0,
-  // });
-  // if (error) {
-  //   setIsAuthenticated(false);
-  //   setIsLoading(false);
-  // }
-  // if (!data) {
-  //   console.log("Loading...");
-  // } else if (data.message === "pass") {
-  //   setUserLoggedIn({
-  //     username: jwtDecode(
-  //       window.localStorage.getItem("auth").split("Bearer ").join("")
-  //     ).email.split("@")[0],
-  //     id: jwtDecode(
-  //       window.localStorage.getItem("auth").split("Bearer ").join("")
-  //     ).user_id,
-  //   });
-  //   setIsLoading(false);
-  //   setIsAuthenticated(true);
-  // }
   return { isAuthenticated, isLoading, error, userLoggedIn };
 };
 

@@ -28,6 +28,14 @@ body {
   @apply transition duration-500 text-white
 }
 
+.we-admin-title-light {
+  @apply transition duration-500 cursor-pointer text-gray-600
+}
+
+.we-admin-title-light:hover {
+  @apply transition duration-500 text-gray-400
+}
+
 .pagination {
   margin: 15px auto;
   display: flex;

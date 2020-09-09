@@ -175,7 +175,7 @@ const User: React.FunctionComponent<Props> = ({}) => {
           cbTab={(tabName) => dispatch({ type: "tab", tabName: tabName })}
         >
           {/* START - HOME */}
-          <div className={state.tab === "home" ? "inline" : "hidden"}>
+          <div className={state.tab === "home" ? "inline light:text-gray-300" : "hidden"}>
             {data.length !== 0 ? (
               data.map((item, idx) => (
                 <div key={item.id}>

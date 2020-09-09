@@ -19,7 +19,7 @@ type UserActivities = {
 
 const Profile = ({}) => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
-  const { userLoggedIn } = useLoggedIn(null);
+  const { userLoggedIn, isAuthenticated } = useLoggedIn(null);
   const [userActivities, setUserActivities] = useState<Array<UserActivities>>(
     []
   );
@@ -40,14 +40,17 @@ const Profile = ({}) => {
     );
     return await res.json();
   };
-  const { data, error } = useSWR(
+  const { data: dataUser, error } = useSWR(
     "/auth/get/" + userLoggedIn.id + "/",
     fetcher,
-    { refreshInterval: 10000 }
+    { refreshInterval: 1000 }
   );
 
-  if (error) return <IsError />;
-  if (!data) return <IsLoading />;
+  if (error) {
+    console.log(error);
+    return <IsError />;
+  }
+  if (!dataUser) return <IsLoading />;
 
   return (
     <div>
@@ -55,7 +58,7 @@ const Profile = ({}) => {
         <Container>
           <div className="md:flex md:justify-center">
             <div>
-              <div className=" text-green-500 cursor-default mt-5">
+              <div className=" text-green-500 light:text-green-800 light:font-semibold cursor-default mt-5">
                 Your Transfer Activities
                 <span className=" animate-pulse"> : </span>{" "}
                 <span className={pulseDelay ? " animate-pulse" : ""}>:</span>
@@ -63,24 +66,24 @@ const Profile = ({}) => {
               <table className="md:ml-5">
                 <thead>
                   <tr>
-                    <th className="py-10 px-5 md:px-10  text-gray-500 text-xl font-mono">
+                    <th className="py-10 px-5 md:px-10  text-gray-500 light:text-gray-600 text-xl font-mono">
                       Date
                     </th>
-                    <th className="py-10 px-5 md:px-10  text-gray-500 text-xl font-mono">
+                    <th className="py-10 px-5 md:px-10  text-gray-500 light:text-gray-600 text-xl font-mono">
                       Deposit
                     </th>
-                    <th className="py-10 px-5 md:px-10  text-gray-500 text-xl font-mono">
+                    <th className="py-10 px-5 md:px-10  text-gray-500 light:text-gray-600 text-xl font-mono">
                       Balance
                     </th>
                   </tr>
                 </thead>
                 <tbody>
-                  {data?.user_activities
+                  {dataUser?.user_activities
                     ?.sort((a, b) => Date.parse(b.date) - Date.parse(a.date))
                     .map((item, idx) => (
                       <tr
                         key={item.id}
-                        className="text-gray-300 cursor-default transition duration-500 hover:text-gray-200"
+                        className="text-gray-300 light:text-gray-700 cursor-default transition duration-500 hover:text-gray-200"
                       >
                         <th className="px-8 py-2">{item.date}</th>
                         <th className="px-8 py-2">${item.amount}</th>
@@ -105,13 +108,6 @@ const Profile = ({}) => {
       </Layout>
     </div>
   );
-};
-
-export const getStaticProps = async (context) => {
-  console.log(context);
-  const res = await fetch(process.env.NEXT_PUBLIC_API + "auth/get/");
-  const data = await res.json();
-  return { props: { data } };
 };
 
 export default Profile;

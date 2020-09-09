@@ -47,7 +47,7 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
         <meta name="viewport" content="initial-scale=1.0, width=device-width" />
       </Head>
 
-      <header className="z-10 fixed top-0 w-full text-gray-500 bg-gray-900 light:bg-gray-300 p-3 md:flex md:justify-start">
+      <header className="z-10 fixed top-0 w-full text-gray-500 light:text-gray-900 light:font-semibold bg-gray-900 light:bg-gray-200 p-3 md:flex md:justify-start">
         <div className="flex items-center justify-between">
           <div>
             <Link href="/">
@@ -63,7 +63,7 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
               <a
                 className={
                   (isAuthenticated ? "" : " hidden ") +
-                  " text-green-400 light:text-green-800 transition duration-500 ease-in-out hover:text-green-200 md:ml-4"
+                  " text-green-400 light:text-green-800 transition duration-500 ease-in-out hover:text-green-200 light:hover:text-gray-500 md:ml-4"
                 }
               >
                 Hi, {userLoggedIn.username}
@@ -72,7 +72,7 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
           </div>
           <div className="flex items-center md:absolute md:right-0">
             <Link href="/about">
-              <a className="mr-4 opacity-25 transition duration-300 hover:opacity-100">
+              <a className="mr-4 opacity-25 light:opacity-50 transition duration-300 hover:opacity-100">
                 <img
                   className="lg:w-6 h-6 animate-spin-slow shadow rounded-full transition duration-500 ease-in-out"
                   src="/we0mmm-r.png"
@@ -130,7 +130,7 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
             <a
               className={
                 (isAuthenticated ? " hidden " : "") +
-                " block mt-5 md:mt-2 ml-4 transition duration-500 ease-in-out hover:text-white lg:light:text-black cursor-pointer"
+                " block mt-5 md:mt-2 ml-4 transition duration-500 ease-in-out hover:text-white light:hover:text-gray-600 lg:light:text-black cursor-pointer"
               }
             >
               Login

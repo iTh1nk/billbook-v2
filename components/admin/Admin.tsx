@@ -17,9 +17,7 @@ const Admin: React.FunctionComponent<Props> = ({ children }) => {
   const { isAuthenticated } = useLoggedIn(null, false);
 
   useEffect(() => {
-    setCurrentTab(
-      window.location.href.split("http://localhost:3000/admin/").join("")
-    );
+    setCurrentTab(window.location.href.match(/\/(?:.(?!\/))+$/)[0]);
     Axios.post(
       process.env.NEXT_PUBLIC_API + "auth/check/",
       {},
@@ -45,13 +43,13 @@ const Admin: React.FunctionComponent<Props> = ({ children }) => {
     <div>
       <Layout title="Admin">
         <Container>
-          <div className="text-center mb-5">
+          <div className="text-center mb-5 text-green-500 light:font-semibold">
             <Link href="/admin">
               <span
                 className={
-                  currentTab === "http://localhost:3000/admin"
-                    ? "underline text-green-500"
-                    : "we-admin-title text-gray-300"
+                  currentTab === "/admin"
+                    ? "underline"
+                    : " we-admin-title-light "
                 }
               >
                 Home
@@ -61,9 +59,9 @@ const Admin: React.FunctionComponent<Props> = ({ children }) => {
             <Link href="/admin/cycle">
               <span
                 className={
-                  currentTab === "cycle"
-                    ? "underline text-green-500"
-                    : "we-admin-title text-gray-300"
+                  currentTab === "/cycle"
+                    ? "underline"
+                    : " we-admin-title-light "
                 }
               >
                 Cycle
@@ -73,9 +71,9 @@ const Admin: React.FunctionComponent<Props> = ({ children }) => {
             <Link href="/admin/statement">
               <span
                 className={
-                  currentTab === "statement"
-                    ? "underline text-green-500"
-                    : "we-admin-title text-gray-300"
+                  currentTab === "/statement"
+                    ? "underline"
+                    : " we-admin-title-light "
                 }
               >
                 Statement
@@ -85,9 +83,9 @@ const Admin: React.FunctionComponent<Props> = ({ children }) => {
             <Link href="/admin/activity">
               <span
                 className={
-                  currentTab === "activity"
-                    ? "underline text-green-500"
-                    : "we-admin-title text-gray-300"
+                  currentTab === "/activity"
+                    ? "underline"
+                    : " we-admin-title-light "
                 }
               >
                 Activity
@@ -97,9 +95,9 @@ const Admin: React.FunctionComponent<Props> = ({ children }) => {
             <Link href="/admin/user">
               <span
                 className={
-                  currentTab === "user"
-                    ? "underline text-green-500"
-                    : "we-admin-title text-gray-300"
+                  currentTab === "/user"
+                    ? "underline"
+                    : " we-admin-title-light "
                 }
               >
                 User

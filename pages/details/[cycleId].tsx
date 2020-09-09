@@ -27,27 +27,27 @@ const Details: React.FunctionComponent<Props> = ({ detail }) => {
   return (
     <Layout title="Monthly Details">
       <Container>
-        <div className="font-mono text-center mt-2 text-gray-600">
+        <div className="font-mono text-center mt-2 text-gray-600 light:text-gray-800">
           Billing Cycle: {detail?.date}
         </div>
         <div className="flex justify-center">
           <table className="table-auto text-center">
             <thead>
               <tr>
-                <th className="py-6 md:py-10 px-5 md:px-10 border-b-2 text-gray-500 text-xl font-mono">
+                <th className="py-6 md:py-10 px-5 md:px-10 border-b-2 text-gray-500 light:text-gray-600 text-xl font-mono">
                   User
                 </th>
-                <th className="py-6 md:py-10 px-5 md:px-10 border-b-2 text-gray-500 text-xl font-mono">
+                <th className="py-6 md:py-10 px-5 md:px-10 border-b-2 text-gray-500 light:text-gray-600 text-xl font-mono">
                   Balance
                 </th>
-                <th className="py-6 md:py-10 px-5 md:px-10 border-b-2 text-gray-500 text-xl font-mono">
+                <th className="py-6 md:py-10 px-5 md:px-10 border-b-2 text-gray-500 light:text-gray-600 text-xl font-mono">
                   Notes
                 </th>
               </tr>
             </thead>
             <tbody>
               {detail?.cycle_statements?.map((item, idx) => (
-                <tr key={item.id} className="hover:bg-gray-900">
+                <tr key={item.id} className="hover:bg-gray-900 light:hover:text-gray-300">
                   <td className="py-5">{item.username.match(/[^@]*/)}</td>
                   <td className="py-5">${item.balance}</td>
                   <td className="py-5">{item.notes}</td>

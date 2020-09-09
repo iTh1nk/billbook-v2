@@ -60,7 +60,7 @@ const Details: React.FunctionComponent<Props> = ({ data0, year, cbLogin }) => {
   return (
     <div>
       <div
-        className="mt-10 w-0 underline font-bold cursor-pointer text-gray-500 transition duration-300 hover:text-gray-300"
+        className="mt-10 w-0 underline font-bold cursor-pointer text-gray-500 light:text-gray-800 transition duration-300 hover:text-gray-300 light:hover:text-gray-600 "
         onClick={(e) => setIsExpand(!isExpand)}
       >
         {year}
@@ -95,7 +95,7 @@ const Details: React.FunctionComponent<Props> = ({ data0, year, cbLogin }) => {
                 </Link>
               ) : (
                 <span onClick={() => cbLogin()}>
-                  <button className="px-3 outline-none font-semibold m-2 bg-gray-300 text-gray-800 rounded-md shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1">
+                  <button className="px-3 outline-none font-semibold m-2 bg-gray-300 light:bg-gray-200 text-gray-800 rounded-md shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1">
                     <span className="px-1">
                       {item.date.substring(5, item.date.length)}
                     </span>
