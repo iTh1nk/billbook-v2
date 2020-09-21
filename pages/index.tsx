@@ -60,7 +60,7 @@ const Index: React.FunctionComponent<Props> = ({
     { initialData: balanceProps }
   );
 
-  if(isLoading) return <IsLoading />
+  if (isLoading) return <IsLoading />;
 
   return (
     <>
@@ -142,6 +142,7 @@ export async function getStaticProps() {
         dataProps,
         yearArr,
         balance: { totalBalance: "0" },
+        revalidate: 2,
       },
     };
   } catch (err) {
