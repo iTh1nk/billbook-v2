@@ -142,8 +142,8 @@ export async function getStaticProps() {
         dataProps,
         yearArr,
         balance: { totalBalance: "0" },
-        revalidate: 2,
       },
+      revalidate: 2,
     };
   } catch (err) {
     console.log(err);
