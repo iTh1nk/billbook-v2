@@ -67,7 +67,7 @@ const Index: React.FunctionComponent<Props> = ({
       <Layout title="Bill Book" showLogin={isModalLogin}>
         <Container>
           {/* Broadcast */}
-          <div className="flex justify-center mb-6 cursor-default animate-pulse">
+          <div className="flex justify-center mb-6 mt-2 cursor-default animate-pulse">
             <div className="bg-gradient-to-r from-red-600 light:from-red-600 to-green-500 light:to-green-400 p-4 rounded-lg transition duration-500 ease-in-out transform hover:-translate-y-1">
               <span className="uppercase text-blue-100 font-semibold text-lg">
                 Stay Active<span className="px-3"></span>Close Your Rings
@@ -79,10 +79,10 @@ const Index: React.FunctionComponent<Props> = ({
             <div className="z-0 w-full bg-gradient-to-r from-teal-600 light:from-teal-300 to-blue-500 light:to-blue-300 p-4 rounded-lg flex flex-wrap justify-start items-end transition duration-300 ease-in-out transform hover:scale-98">
               {isAuthenticated ? (
                 <div>
-                  <div className="py-5 md:inline font-semibold">
+                  <div className="py-5 sm:inline font-semibold inline-block">
                     Balance as of cycle:
                   </div>
-                  <div className="text-6xl mt-5 ml-5 animate-bounce-slow md:inline font-mono font-semibold">
+                  <div className="text-6xl mt-5 ml-5 animate-bounce-slow sm:inline font-mono font-semibold">
                     <span
                       className={
                         (parseInt(data?.totalBalance) < 0
@@ -93,7 +93,7 @@ const Index: React.FunctionComponent<Props> = ({
                       ${data?.totalBalance}
                     </span>
                   </div>
-                  <div className="md:py-5 md:ml-2">
+                  <div className="sm:py-5 sm:ml-2 inline-block">
                     {parseInt(data?.totalBalance) < 0
                       ? ""
                       : "(No action required)"}
