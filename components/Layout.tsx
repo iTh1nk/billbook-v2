@@ -10,6 +10,7 @@ import { AssignContext } from "./AssignContext";
 import Axios from "axios";
 import IsLoading from "./IsLoading";
 import useLoggedIn from "./hooks/useLoggedIn";
+import moment from "moment";
 
 interface LayoutProps {
   title?: string;
@@ -168,7 +169,7 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
       <footer className="flex justify-center items-center text-white light:text-black h-16">
         <Link href="https://home.we0mmm.site">
           <a className="text-xs transition duration-500 ease-in-out hover:text-orange-500">
-            ©️ 2020 | We0mmm
+            ©️ {moment().year()} | We0mmm
           </a>
         </Link>
       </footer>
