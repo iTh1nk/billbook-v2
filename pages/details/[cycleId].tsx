@@ -30,7 +30,7 @@ const Details: React.FunctionComponent<Props> = ({ detail }) => {
         <div className="font-mono text-center mt-2 text-gray-600 light:text-gray-800">
           Billing Cycle: {detail?.date}
         </div>
-        <div className="flex justify-center">
+        <div className="flex justify-center mb-10">
           <table className="table-auto text-center">
             <thead>
               <tr>
