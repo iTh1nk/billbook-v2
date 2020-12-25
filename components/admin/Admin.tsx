@@ -19,7 +19,7 @@ const Admin: React.FunctionComponent<Props> = ({ children }) => {
   useEffect(() => {
     setCurrentTab(window.location.href.match(/\/(?:.(?!\/))+$/)[0]);
     Axios.post(
-      process.env.NEXT_PUBLIC_API + "auth/check/",
+      process.env.NEXT_PUBLIC_API + "auth/admincheck/",
       {},
       {
         headers: {
@@ -28,8 +28,9 @@ const Admin: React.FunctionComponent<Props> = ({ children }) => {
       }
     )
       .then((resp) => {
-        if (resp.data.message === "pass") setIsLoading(false);
-        setIsLoading(false);
+        if (resp.data.message === "pass") {
+          setIsLoading(false);
+        }
       })
       .catch((err) => {
         window.location.replace("/");
