@@ -66,34 +66,40 @@ const Index: React.FunctionComponent<Props> = ({
     <>
       <Layout title="Bill Book" showLogin={isModalLogin}>
         <Container>
-          {/* Start - Main section: balance */}
-          {isAuthenticated ? (
-            <div className="flex justify-center">
-              <div className="z-0 w-full bg-gradient-to-r from-teal-600 light:from-teal-300 to-blue-500 light:to-blue-300 p-4 rounded-lg flex flex-wrap justify-start items-end transition duration-300 ease-in-out transform hover:scale-98">
-                <div className="py-5 md:inline font-semibold">
-                  Balance as of cycle:
-                </div>
-                <div className="text-6xl mt-5 ml-5 animate-bounce-slow md:inline font-mono font-semibold">
-                  <span
-                    className={
-                      (parseInt(data?.totalBalance) < 0
-                        ? " text-red-500 light:text-red-600"
-                        : " text-white ") + " "
-                    }
-                  >
-                    ${data?.totalBalance}
-                  </span>
-                </div>
-                <div className="md:py-5 md:ml-2">
-                  {parseInt(data?.totalBalance) < 0
-                    ? ""
-                    : "(No action required)"}
-                </div>
-              </div>
+          {/* Broadcast */}
+          <div className="flex justify-center mb-6 cursor-default">
+            <div className="bg-gradient-to-r from-red-600 light:from-red-600 to-green-500 light:to-green-400 p-4 rounded-lg transition duration-500 ease-in-out transform hover:-translate-y-1">
+              <span className="uppercase text-blue-100 font-semibold text-lg">
+                Stay Active<span className="px-3"></span>Close Your Rings
+              </span>
             </div>
-          ) : (
-            <div className="flex justify-center">
-              <div className="z-0 w-full  bg-gradient-to-r from-teal-600 light:from-teal-300 to-blue-500 light:to-blue-300 p-4 rounded-lg flex flex-wrap justify-start items-end transition duration-300 ease-in-out transform hover:scale-98">
+          </div>
+          {/* Start - Main section: balance */}
+          <div className="flex justify-center">
+            <div className="z-0 w-full bg-gradient-to-r from-teal-600 light:from-teal-300 to-blue-500 light:to-blue-300 p-4 rounded-lg flex flex-wrap justify-start items-end transition duration-300 ease-in-out transform hover:scale-98">
+              {isAuthenticated ? (
+                <div>
+                  <div className="py-5 md:inline font-semibold">
+                    Balance as of cycle:
+                  </div>
+                  <div className="text-6xl mt-5 ml-5 animate-bounce-slow md:inline font-mono font-semibold">
+                    <span
+                      className={
+                        (parseInt(data?.totalBalance) < 0
+                          ? " text-red-500 light:text-red-600"
+                          : " text-white ") + " "
+                      }
+                    >
+                      ${data?.totalBalance}
+                    </span>
+                  </div>
+                  <div className="md:py-5 md:ml-2">
+                    {parseInt(data?.totalBalance) < 0
+                      ? ""
+                      : "(No action required)"}
+                  </div>
+                </div>
+              ) : (
                 <div className="text-xl p-5 font-semibold">
                   Please{" "}
                   <span
@@ -103,9 +109,9 @@ const Index: React.FunctionComponent<Props> = ({
                     Login
                   </span>
                 </div>
-              </div>
+              )}
             </div>
-          )}
+          </div>
           {/* End - Main section: balance */}
 
           {/* Start - Monthly Details Btn */}
