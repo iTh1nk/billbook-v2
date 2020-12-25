@@ -67,7 +67,7 @@ const Index: React.FunctionComponent<Props> = ({
       <Layout title="Bill Book" showLogin={isModalLogin}>
         <Container>
           {/* Broadcast */}
-          <div className="flex justify-center mb-6 cursor-default">
+          <div className="flex justify-center mb-6 cursor-default animate-pulse">
             <div className="bg-gradient-to-r from-red-600 light:from-red-600 to-green-500 light:to-green-400 p-4 rounded-lg transition duration-500 ease-in-out transform hover:-translate-y-1">
               <span className="uppercase text-blue-100 font-semibold text-lg">
                 Stay Active<span className="px-3"></span>Close Your Rings

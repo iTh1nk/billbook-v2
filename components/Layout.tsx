@@ -136,12 +136,12 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
               Login
             </a>
           </div>
-          <div
+          {/* <div
             onClick={(e) => setIsModalNotes(!isModalNotes)}
-            className="block mt-5 md:mt-2 mb-3 md:mb-0 ml-4 md:ml-10 transition duration-500 ease-in-out hover:text-white lg:light:text-black cursor-pointer animate-pulse"
+            className="block mt-5 md:mt-2 mb-3 md:mb-0 ml-4 md:ml-10 transition duration-500 ease-in-out hover:text-white lg:light:text-black cursor-pointer"
           >
             _NEXT
-          </div>
+          </div> */}
         </nav>
       </header>
 
