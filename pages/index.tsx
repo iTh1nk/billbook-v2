@@ -10,6 +10,7 @@ import Axios from "axios";
 import useLoggedIn from "../components/hooks/useLoggedIn";
 import useSWR from "swr";
 import IsLoading from "../components/IsLoading";
+import Head from "next/head";
 
 type CycleStatements = {
   id: number;
@@ -64,6 +65,15 @@ const Index: React.FunctionComponent<Props> = ({
 
   return (
     <>
+      <Head>
+        <meta charSet="utf-8" />
+        <meta name="viewport" content="initial-scale=1.0, width=device-width" />
+        <meta
+          name="description"
+          content="This is an app for bill management."
+        />
+        <link rel="manifest" href="/manifest.json" />
+      </Head>
       <Layout title="Bill Book" showLogin={isModalLogin}>
         <Container>
           {/* Broadcast */}

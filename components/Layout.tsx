@@ -50,7 +50,6 @@ export const Layout: React.FunctionComponent<LayoutProps> = ({
           name="description"
           content="This is an app for bill management."
         />
-        <link rel="manifest" href="/manifest.json" />
       </Head>
 
       <header className="z-10 fixed top-0 w-full text-gray-500 light:text-gray-900 light:font-semibold bg-gray-900 light:bg-gray-200 p-3 md:flex md:justify-start">
