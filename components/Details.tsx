@@ -80,7 +80,7 @@ const Details: React.FunctionComponent<Props> = ({ data0, year, cbLogin }) => {
                   <a>
                     <button
                       onClick={() => markCycleRead(item.date, item.id)}
-                      className="px-3 py-1 my-4  outline-none font-semibold m-2 bg-gray-300 text-gray-800 rounded-md shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1"
+                      className="px-3 py-1 my-4 w-24 outline-none font-semibold m-2 bg-gray-300 text-gray-800 rounded-md shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1"
                     >
                       <span className="px-1">
                         {item.date.substring(5, item.date.length)}
@@ -95,7 +95,7 @@ const Details: React.FunctionComponent<Props> = ({ data0, year, cbLogin }) => {
                 </Link>
               ) : (
                 <span onClick={() => cbLogin()}>
-                  <button className="px-3 py-1 my-4 outline-none font-semibold m-2 bg-gray-300 light:bg-gray-200 text-gray-800 rounded-md shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1">
+                  <button className="px-3 py-1 my-4 w-24 outline-none font-semibold m-2 bg-gray-300 light:bg-gray-200 text-gray-800 rounded-md shadow-2xl transition duration-300 ease-in-out transform hover:-translate-y-1">
                     <span className="px-1">
                       {item.date.substring(5, item.date.length)}
                     </span>
