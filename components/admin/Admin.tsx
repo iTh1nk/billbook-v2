@@ -104,6 +104,18 @@ const Admin: React.FunctionComponent<Props> = ({ children }) => {
                 User
               </span>
             </Link>
+            <span className="m-2 cursor-default"> | </span>
+            <Link href="/admin/apns">
+              <span
+                className={
+                  currentTab === "/apns"
+                    ? "underline"
+                    : " we-admin-title-light "
+                }
+              >
+                APNs
+              </span>
+            </Link>
           </div>
           {children}
         </Container>
