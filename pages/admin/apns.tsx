@@ -86,6 +86,15 @@ const Apns: React.FunctionComponent = () => {
                     <li>
                       <span className="text-gray-500">apnsToken: </span>
                       {item.apnsToken}
+                      <button
+                        className="ml-2 text-sm bg-gray-600 rounded-md px-1 outline-none"
+                        onClick={() => {
+                          navigator.clipboard.writeText(item.apnsToken);
+                          toasterNotes("success", 1000);
+                        }}
+                      >
+                        Copy
+                      </button>
                     </li>
                     <li>
                       <span className="text-gray-500">environment: </span>
